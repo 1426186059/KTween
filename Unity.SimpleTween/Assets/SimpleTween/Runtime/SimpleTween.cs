@@ -214,6 +214,18 @@ public static partial class SimpleTween
             SqeNext = mItem;
             return this;
         }
+
+        public TweenItem SetOnCompleteFunc(Action mFunc)
+        {
+            this.finishFunc = mFunc;
+            return this;
+        }
+
+        public TweenItem SetOnUpdateFunc(Action<float> mFunc)
+        {
+            this.updateFunc = mFunc;
+            return this;
+        }
     }
 
     private class ObjectPool
