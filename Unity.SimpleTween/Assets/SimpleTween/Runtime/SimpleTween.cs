@@ -141,7 +141,7 @@ public static partial class SimpleTween
         public float sumTime = 0f;
         public int nLoopCount = 0;
         public int nLoopPingTong = 0;
-        public SimpleTweenType nType = SimpleTweenType.linear;
+        public SimpleTweenType nType = SimpleTweenType.easeLinear;
         public Action<float> updateFunc = null;
         public Action finishFunc = null;
 
@@ -166,7 +166,7 @@ public static partial class SimpleTween
 
             nLoopCount = 0;
             nLoopPingTong = 0;
-            nType = SimpleTweenType.linear;
+            nType = SimpleTweenType.easeLinear;
         }
 
         public TweenItemHandle GetHandle()

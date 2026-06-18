@@ -33,8 +33,8 @@ public static class CreateExampleScenes
         CreateScene("AllInOne", "AllInOne 合集", typeof(Example_AllInOne), PrimitiveType.Cube, new Color(0.5f, 0.3f, 0.8f));
         CreateScene("AllDemos", "全部示例合集", typeof(ExampleRunner), null, Color.white);
 
-        // ---- LT 风格示例 ----
-        // 已移除: LT 风格示例场景尚未实现
+        // ---- SimpleTweenEx 示例 ----
+        CreateScene("ExDemos", "Ex-扩展 API 演示", typeof(Example_ExDemos), null, Color.white);
 
         AssetDatabase.Refresh();
         Debug.Log($"成功创建 {ScenesDir} 目录下的所有示例场景！");
@@ -74,7 +74,7 @@ public static class CreateExampleScenes
 
         // -------------------- 创建可视化物体 + 挂示例脚本 --------------------
 
-        if (componentType == typeof(ExampleRunner))
+        if (componentType == typeof(ExampleRunner) || componentType == typeof(Example_ExDemos))
         {
             var go = new GameObject(displayName);
             go.transform.position = Vector3.zero;
@@ -269,6 +269,8 @@ public class ExampleSceneCreatorWindow : EditorWindow
         new ExampleEntry { Name = "13 - 路径运动", FileName = "PathMovement", ComponentType = typeof(Example_13_PathMovement), Description = "沿多点路径运动" },
         new ExampleEntry { Name = "AllInOne 合集", FileName = "AllInOne", ComponentType = typeof(Example_AllInOne), Description = "20 种用法合集" },
         new ExampleEntry { Name = "全部示例合集", FileName = "AllDemos", ComponentType = typeof(ExampleRunner), Description = "所有示例可视化展示" },
+        // ---- SimpleTweenEx 示例 ----
+        new ExampleEntry { Name = "Ex-扩展 API 演示", FileName = "ExDemos", ComponentType = typeof(Example_ExDemos), Description = "SimpleTweenEx 扩展方法：move/scale/rotate/color/alpha/chain" },
     };
 
     private void OnGUI()

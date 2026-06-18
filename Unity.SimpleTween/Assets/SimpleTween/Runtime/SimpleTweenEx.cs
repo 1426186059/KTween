@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -8,114 +7,163 @@ using UnityEngine;
 /// </summary>
 public static class SimpleTweenEx
 {
-    public static float tau => Mathf.PI * 2f;
-
-    public static void init(int maxTweenCount = 1300) => SimpleTween.SetMaxTweenCount(maxTweenCount);
-
     // ==============================================================
     // 位置移动
     // ==============================================================
-    public static SimpleTween.TweenItem move(GameObject obj, Vector3 to, float time, SimpleTweenType nType = SimpleTweenType.linear)
-        => TweenPosition(obj, obj.transform.position, to, time, nType);
-    public static SimpleTween.TweenItem moveX(GameObject obj, float x, float time, SimpleTweenType nType = SimpleTweenType.linear)
-    { Vector3 f = obj.transform.position; return TweenPosition(obj, f, new Vector3(x, f.y, f.z), time, nType); }
-    public static SimpleTween.TweenItem moveY(GameObject obj, float y, float time, SimpleTweenType nType = SimpleTweenType.linear)
-    { Vector3 f = obj.transform.position; return TweenPosition(obj, f, new Vector3(f.x, y, f.z), time, nType); }
-    public static SimpleTween.TweenItem moveZ(GameObject obj, float z, float time, SimpleTweenType nType = SimpleTweenType.linear)
-    { Vector3 f = obj.transform.position; return TweenPosition(obj, f, new Vector3(f.x, f.y, z), time, nType); }
-    public static SimpleTween.TweenItem moveLocal(GameObject obj, Vector3 to, float time, SimpleTweenType nType = SimpleTweenType.linear)
-        => TweenLocalPosition(obj, obj.transform.localPosition, to, time, nType);
-    public static SimpleTween.TweenItem moveLocalX(GameObject obj, float x, float time, SimpleTweenType nType = SimpleTweenType.linear)
-    { Vector3 f = obj.transform.localPosition; return TweenLocalPosition(obj, f, new Vector3(x, f.y, f.z), time, nType); }
-    public static SimpleTween.TweenItem moveLocalY(GameObject obj, float y, float time, SimpleTweenType nType = SimpleTweenType.linear)
-    { Vector3 f = obj.transform.localPosition; return TweenLocalPosition(obj, f, new Vector3(f.x, y, f.z), time, nType); }
-    public static SimpleTween.TweenItem moveLocalZ(GameObject obj, float z, float time, SimpleTweenType nType = SimpleTweenType.linear)
-    { Vector3 f = obj.transform.localPosition; return TweenLocalPosition(obj, f, new Vector3(f.x, f.y, z), time, nType); }
+    public static SimpleTween.TweenItem move(GameObject obj, Vector3 to, float time, SimpleTweenType nType = SimpleTweenType.easeLinear)
+    {
+        Vector3 from = obj.transform.position;
+        return SimpleTween.AddTween(obj, time, fPercent =>
+        {
+            obj.transform.position = Vector3.Lerp(from, to, SimpleTweenFunc.ApplyEase(nType, fPercent));
+        });
+    }
+
+    public static SimpleTween.TweenItem moveX(GameObject obj, float x, float time, SimpleTweenType nType = SimpleTweenType.easeLinear)
+    {
+        Vector3 from = obj.transform.position;
+        return SimpleTween.AddTween(obj, time, fPercent =>
+        {
+            obj.transform.position = new Vector3(
+                Mathf.Lerp(from.x, x, SimpleTweenFunc.ApplyEase(nType, fPercent)),
+                from.y, from.z);
+        });
+    }
+
+    public static SimpleTween.TweenItem moveY(GameObject obj, float y, float time, SimpleTweenType nType = SimpleTweenType.easeLinear)
+    {
+        Vector3 from = obj.transform.position;
+        return SimpleTween.AddTween(obj, time, fPercent =>
+        {
+            obj.transform.position = new Vector3(
+                from.x,
+                Mathf.Lerp(from.y, y, SimpleTweenFunc.ApplyEase(nType, fPercent)),
+                from.z);
+        });
+    }
+
+    public static SimpleTween.TweenItem moveZ(GameObject obj, float z, float time, SimpleTweenType nType = SimpleTweenType.easeLinear)
+    {
+        Vector3 from = obj.transform.position;
+        return SimpleTween.AddTween(obj, time, fPercent =>
+        {
+            obj.transform.position = new Vector3(
+                from.x, from.y,
+                Mathf.Lerp(from.z, z, SimpleTweenFunc.ApplyEase(nType, fPercent)));
+        });
+    }
+
+    public static SimpleTween.TweenItem moveLocal(GameObject obj, Vector3 to, float time, SimpleTweenType nType = SimpleTweenType.easeLinear)
+    {
+        Vector3 from = obj.transform.localPosition;
+        return SimpleTween.AddTween(obj, time, fPercent =>
+        {
+            obj.transform.localPosition = Vector3.Lerp(from, to, SimpleTweenFunc.ApplyEase(nType, fPercent));
+        });
+    }
+
+    public static SimpleTween.TweenItem moveLocalX(GameObject obj, float x, float time, SimpleTweenType nType = SimpleTweenType.easeLinear)
+    {
+        Vector3 from = obj.transform.localPosition;
+        return SimpleTween.AddTween(obj, time, fPercent =>
+        {
+            obj.transform.localPosition = new Vector3(
+                Mathf.Lerp(from.x, x, SimpleTweenFunc.ApplyEase(nType, fPercent)),
+                from.y, from.z);
+        });
+    }
+
+    public static SimpleTween.TweenItem moveLocalY(GameObject obj, float y, float time, SimpleTweenType nType = SimpleTweenType.easeLinear)
+    {
+        Vector3 from = obj.transform.localPosition;
+        return SimpleTween.AddTween(obj, time, fPercent =>
+        {
+            obj.transform.localPosition = new Vector3(
+                from.x,
+                Mathf.Lerp(from.y, y, SimpleTweenFunc.ApplyEase(nType, fPercent)),
+                from.z);
+        });
+    }
+
+    public static SimpleTween.TweenItem moveLocalZ(GameObject obj, float z, float time, SimpleTweenType nType = SimpleTweenType.easeLinear)
+    {
+        Vector3 from = obj.transform.localPosition;
+        return SimpleTween.AddTween(obj, time, fPercent =>
+        {
+            obj.transform.localPosition = new Vector3(
+                from.x, from.y,
+                Mathf.Lerp(from.z, z, SimpleTweenFunc.ApplyEase(nType, fPercent)));
+        });
+    }
 
     // ==============================================================
     // 缩放
     // ==============================================================
-    public static SimpleTween.TweenItem scale(GameObject obj, Vector3 to, float time, SimpleTweenType nType = SimpleTweenType.linear)
+    public static SimpleTween.TweenItem scale(GameObject obj, Vector3 to, float time, SimpleTweenType nType = SimpleTweenType.easeLinear)
     {
         Vector3 from = obj.transform.localScale;
-        return Create(obj, time, t => obj.transform.localScale = Vector3.Lerp(from, to, SimpleTweenFunc.ApplyEase(nType, t)));
+        return SimpleTween.AddTween(obj, time, fPercent =>
+        {
+            obj.transform.localScale = Vector3.Lerp(from, to, SimpleTweenFunc.ApplyEase(nType, fPercent));
+        });
     }
 
     // ==============================================================
     // 旋转
     // ==============================================================
-    public static SimpleTween.TweenItem rotateAround(GameObject obj, Vector3 axis, float angle, float time, SimpleTweenType nType = SimpleTweenType.linear)
+    public static SimpleTween.TweenItem rotateAround(GameObject obj, Vector3 axis, float angle, float time, SimpleTweenType nType = SimpleTweenType.easeLinear)
     {
         Vector3 startEuler = obj.transform.eulerAngles;
         Vector3 delta = axis.normalized * angle;
-        return Create(obj, time, t => obj.transform.eulerAngles = startEuler + delta * SimpleTweenFunc.ApplyEase(nType, t));
+        return SimpleTween.AddTween(obj, time, fPercent =>
+        {
+            obj.transform.eulerAngles = startEuler + delta * SimpleTweenFunc.ApplyEase(nType, fPercent);
+        });
     }
-    public static SimpleTween.TweenItem rotateAroundLocal(GameObject obj, Vector3 axis, float angle, float time, SimpleTweenType nType = SimpleTweenType.linear)
+
+    public static SimpleTween.TweenItem rotateAroundLocal(GameObject obj, Vector3 axis, float angle, float time, SimpleTweenType nType = SimpleTweenType.easeLinear)
     {
         Quaternion startRot = obj.transform.localRotation;
         Quaternion delta = Quaternion.AngleAxis(angle, axis.normalized);
-        return Create(obj, time, t => obj.transform.localRotation = Quaternion.Slerp(Quaternion.identity, delta, SimpleTweenFunc.ApplyEase(nType, t)) * startRot);
+        return SimpleTween.AddTween(obj, time, fPercent =>
+        {
+            obj.transform.localRotation = Quaternion.Slerp(
+                Quaternion.identity, delta, SimpleTweenFunc.ApplyEase(nType, fPercent)) * startRot;
+        });
     }
 
     // ==============================================================
     // 颜色 & 透明度
     // ==============================================================
-    public static SimpleTween.TweenItem color(GameObject obj, Color to, float time, SimpleTweenType nType = SimpleTweenType.linear)
+    public static SimpleTween.TweenItem color(GameObject obj, Color to, float time, SimpleTweenType nType = SimpleTweenType.easeLinear)
     {
         var r = obj.GetComponent<Renderer>();
-        if (r == null) return Create(obj, 0f, null);
+        if (r == null) return SimpleTween.AddTween(obj, 0f, null);
         Color from = r.material.color;
-        return Create(obj, time, t => r.material.color = Color.Lerp(from, to, SimpleTweenFunc.ApplyEase(nType, t)));
-    }
-    public static SimpleTween.TweenItem alpha(GameObject obj, float to, float time, SimpleTweenType nType = SimpleTweenType.linear)
-    {
-        var r = obj.GetComponent<Renderer>();
-        if (r == null) return Create(obj, 0f, null);
-        return Create(obj, time, t => {
-            Color c = r.material.color;
-            r.material.color = new Color(c.r, c.g, c.b, Mathf.Lerp(c.a, to, SimpleTweenFunc.ApplyEase(nType, t)));
+        return SimpleTween.AddTween(obj, time, fPercent =>
+        {
+            r.material.color = Color.Lerp(from, to, SimpleTweenFunc.ApplyEase(nType, fPercent));
         });
     }
-    public static SimpleTween.TweenItem alphaCanvas(CanvasGroup cg, float to, float time, SimpleTweenType nType = SimpleTweenType.linear)
+
+    public static SimpleTween.TweenItem alpha(GameObject obj, float to, float time, SimpleTweenType nType = SimpleTweenType.easeLinear)
+    {
+        var r = obj.GetComponent<Renderer>();
+        if (r == null) return SimpleTween.AddTween(obj, 0f, null);
+        return SimpleTween.AddTween(obj, time, fPercent =>
+        {
+            Color c = r.material.color;
+            r.material.color = new Color(c.r, c.g, c.b,
+                Mathf.Lerp(c.a, to, SimpleTweenFunc.ApplyEase(nType, fPercent)));
+        });
+    }
+
+    public static SimpleTween.TweenItem alphaCanvas(CanvasGroup cg, float to, float time, SimpleTweenType nType = SimpleTweenType.easeLinear)
     {
         float from = cg.alpha;
-        return Create(cg.gameObject, time, t => cg.alpha = Mathf.Lerp(from, to, SimpleTweenFunc.ApplyEase(nType, t)));
-    }
-
-    // ==============================================================
-    // 通用值渐变
-    // ==============================================================
-    public static SimpleTween.TweenItem value(GameObject obj, float from, float to, float time, SimpleTweenType nType = SimpleTweenType.linear)
-        => Create(obj, time, t => { var _ = SimpleTweenFunc.ApplyEase(nType, t); });
-    public static SimpleTween.TweenItem value(GameObject obj, Vector2 from, Vector2 to, float time, SimpleTweenType nType = SimpleTweenType.linear)
-        => Create(obj, time, t => { var _ = SimpleTweenFunc.ApplyEase(nType, t); });
-    public static SimpleTween.TweenItem value(GameObject obj, Vector3 from, Vector3 to, float time, SimpleTweenType nType = SimpleTweenType.linear)
-        => Create(obj, time, t => { var _ = SimpleTweenFunc.ApplyEase(nType, t); });
-
-    // ==============================================================
-    // 延时调用
-    // ==============================================================
-    public static SimpleTween.TweenItem delayedCall(GameObject obj, float time, Action callback)
-        => SimpleTween.delayedCall(obj, time, callback);
-    public static SimpleTween.TweenItem delayedCall(float time, Action callback)
-        => SimpleTween.delayedCall(time, callback);
-
-    private static SimpleTween.TweenItem TweenPosition(GameObject obj, Vector3 from, Vector3 to, float time, SimpleTweenType nType = SimpleTweenType.linear)
-    {
-        return Create(obj, time, t => obj.transform.position = Vector3.Lerp(from, to, SimpleTweenFunc.ApplyEase(nType, t)));
-    }
-
-    private static SimpleTween.TweenItem TweenLocalPosition(GameObject obj, Vector3 from, Vector3 to, float time, SimpleTweenType nType = SimpleTweenType.linear)
-    {
-        return Create(obj, time, t => obj.transform.localPosition = Vector3.Lerp(from, to, SimpleTweenFunc.ApplyEase(nType, t)));
-    }
-
-    public static SimpleTween.TweenItem Create(GameObject obj, float time, Action<float> update, Action onComplete = null)
-    {
-        return SimpleTween.AddTween(obj, time, t =>
+        return SimpleTween.AddTween(cg.gameObject, time, fPercent =>
         {
-            update?.Invoke(t);
-        }, onComplete);
+            cg.alpha = Mathf.Lerp(from, to, SimpleTweenFunc.ApplyEase(nType, fPercent));
+        });
     }
-
 }

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public enum SimpleTweenType
 {
-    notUsed, linear, easeOutQuad, easeInQuad, easeInOutQuad, easeInCubic, easeOutCubic, easeInOutCubic,
+    notUsed, easeLinear, easeOutQuad, easeInQuad, easeInOutQuad, easeInCubic, easeOutCubic, easeInOutCubic,
     easeInQuart, easeOutQuart, easeInOutQuart,
     easeInQuint, easeOutQuint, easeInOutQuint, easeInSine, easeOutSine, easeInOutSine, easeInExpo, easeOutExpo, easeInOutExpo, easeInCirc, easeOutCirc, easeInOutCirc,
     easeInBounce, easeOutBounce, easeInOutBounce, easeInBack, easeOutBack, easeInOutBack, easeInElastic, easeOutElastic, easeInOutElastic, easeSpring, easeShake, punch, once, clamp, pingPong, animationCurve
@@ -16,7 +16,7 @@ public static class SimpleTweenFunc
         fPercent = Mathf.Clamp01(fPercent);
         return type switch
         {
-            SimpleTweenType.linear          => fPercent,
+            SimpleTweenType.easeLinear => fPercent,
             SimpleTweenType.easeInQuad      => QuadIn(fPercent),
             SimpleTweenType.easeOutQuad     => QuadOut(fPercent),
             SimpleTweenType.easeInOutQuad   => QuadInOut(fPercent),
