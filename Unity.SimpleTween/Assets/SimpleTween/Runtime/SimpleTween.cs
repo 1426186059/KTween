@@ -90,6 +90,7 @@ public static partial class SimpleTween
                 if (m_Instance == null)
                 {
                     GameObject go = new GameObject("SimpleTween~", typeof(SimpleTweenMgr));
+                    DontDestroyOnLoad(go);
                     m_Instance = go.GetComponent<SimpleTweenMgr>();
                 }
                 return m_Instance;
@@ -217,7 +218,7 @@ public static partial class SimpleTween
 
     private class ObjectPool
     {
-        Stack<TweenItem> mObjectPool = new Stack<TweenItem>();
+        readonly Stack<TweenItem> mObjectPool = new Stack<TweenItem>();
         int nMaxCapacity = 1024;
 
         public void SetMaxCapacity(int nCount)

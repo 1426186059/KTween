@@ -1,0 +1,16 @@
+{
+    "name": "SimpleTween.Examples",
+    "rootNamespace": "",
+    "references": [
+        "SimpleTween.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
