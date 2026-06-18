@@ -229,7 +229,8 @@ public class SimpleTweenExPlayModeTests
     [UnityTest]
     public IEnumerator Move_WithEaseOutBounce_CompletesCorrectly()
     {
-        SimpleTweenEx.move(m_TestObject, new Vector3(5f, 0f, 0f), 0.2f, SimpleTweenType.easeOutBounce);
+        var item = SimpleTweenEx.move(m_TestObject, new Vector3(5f, 0f, 0f), 0.2f);
+        item.SetEase(SimpleTweenType.easeOutBounce);
         yield return new WaitForSeconds(0.3f);
         Assert.AreEqual(5f, m_TestObject.transform.position.x, 0.1f);
     }
@@ -237,7 +238,8 @@ public class SimpleTweenExPlayModeTests
     [UnityTest]
     public IEnumerator Move_WithEaseInElastic_CompletesCorrectly()
     {
-        SimpleTweenEx.move(m_TestObject, new Vector3(3f, 0f, 0f), 0.2f, SimpleTweenType.easeInElastic);
+        var item = SimpleTweenEx.move(m_TestObject, new Vector3(3f, 0f, 0f), 0.2f);
+        item.SetEase(SimpleTweenType.easeInElastic);
         yield return new WaitForSeconds(0.3f);
         Assert.AreEqual(3f, m_TestObject.transform.position.x, 0.1f);
     }
