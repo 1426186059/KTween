@@ -41,7 +41,8 @@ public static partial class SimpleTween
 
                     mItem.time = Mathf.Clamp(mItem.time, 0, mItem.sumTime);
                     float fTimePercent = mItem.time / mItem.sumTime;
-                    mItem.updateFunc?.Invoke(fTimePercent);
+                    float eased = SimpleTweenFunc.ApplyEase(mItem.nType, fTimePercent);
+                    mItem.updateFunc?.Invoke(eased);
 
                     if (mItem.nLoopPingTong == 2)
                     {
@@ -75,7 +76,8 @@ public static partial class SimpleTween
                     mItem.time += Time.deltaTime;
                     mItem.time = Mathf.Clamp(mItem.time, 0, mItem.sumTime);
                     float fTimePercent = mItem.time / mItem.sumTime;
-                    mItem.updateFunc?.Invoke(fTimePercent);
+                    float eased = SimpleTweenFunc.ApplyEase(mItem.nType, fTimePercent);
+                    mItem.updateFunc?.Invoke(eased);
 
                     if (fTimePercent >= 1.0f)
                     {

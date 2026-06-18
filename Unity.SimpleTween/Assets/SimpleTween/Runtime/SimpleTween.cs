@@ -36,6 +36,100 @@ public static partial class SimpleTween
         return AddTween(obj, time, null, finishFunc);
     }
 
+    // ==============================================================
+    // 工厂方法 — 返回 TweenItem，支持 SetEase 链式调用
+    // ==============================================================
+
+    /// <summary>位置移动到目标</summary>
+    public static TweenItem move(GameObject obj, Vector3 to, float time)
+    {
+        Vector3 from = obj.transform.position;
+        return AddTween(obj, time, t => obj.transform.position = Vector3.Lerp(from, to, t));
+    }
+    public static TweenItem moveX(GameObject obj, float toX, float time)
+    {
+        Vector3 from = obj.transform.position;
+        return AddTween(obj, time, t => obj.transform.position = new Vector3(Mathf.Lerp(from.x, toX, t), from.y, from.z));
+    }
+    public static TweenItem moveY(GameObject obj, float toY, float time)
+    {
+        Vector3 from = obj.transform.position;
+        return AddTween(obj, time, t => obj.transform.position = new Vector3(from.x, Mathf.Lerp(from.y, toY, t), from.z));
+    }
+    public static TweenItem moveZ(GameObject obj, float toZ, float time)
+    {
+        Vector3 from = obj.transform.position;
+        return AddTween(obj, time, t => obj.transform.position = new Vector3(from.x, from.y, Mathf.Lerp(from.z, toZ, t)));
+    }
+    public static TweenItem moveLocal(GameObject obj, Vector3 to, float time)
+    {
+        Vector3 from = obj.transform.localPosition;
+        return AddTween(obj, time, t => obj.transform.localPosition = Vector3.Lerp(from, to, t));
+    }
+    public static TweenItem moveLocalX(GameObject obj, float toX, float time)
+    {
+        Vector3 from = obj.transform.localPosition;
+        return AddTween(obj, time, t => obj.transform.localPosition = new Vector3(Mathf.Lerp(from.x, toX, t), from.y, from.z));
+    }
+    public static TweenItem moveLocalY(GameObject obj, float toY, float time)
+    {
+        Vector3 from = obj.transform.localPosition;
+        return AddTween(obj, time, t => obj.transform.localPosition = new Vector3(from.x, Mathf.Lerp(from.y, toY, t), from.z));
+    }
+    public static TweenItem moveLocalZ(GameObject obj, float toZ, float time)
+    {
+        Vector3 from = obj.transform.localPosition;
+        return AddTween(obj, time, t => obj.transform.localPosition = new Vector3(from.x, from.y, Mathf.Lerp(from.z, toZ, t)));
+    }
+
+    /// <summary>缩放到目标</summary>
+    public static TweenItem scale(GameObject obj, Vector3 to, float time)
+    {
+        Vector3 from = obj.transform.localScale;
+        return AddTween(obj, time, t => obj.transform.localScale = Vector3.Lerp(from, to, t));
+    }
+
+    /// <summary>绕轴旋转</summary>
+    public static TweenItem rotateAround(GameObject obj, Vector3 axis, float angle, float time)
+    {
+        Quaternion from = obj.transform.rotation;
+        Quaternion to = from * Quaternion.AngleAxis(angle, axis.normalized);
+        return AddTween(obj, time, t => obj.transform.rotation = Quaternion.Slerp(from, to, t));
+    }
+    public static TweenItem rotateAroundLocal(GameObject obj, Vector3 axis, float angle, float time)
+    {
+        Quaternion from = obj.transform.localRotation;
+        Quaternion to = Quaternion.AngleAxis(angle, axis.normalized);
+        return AddTween(obj, time, t => obj.transform.localRotation = Quaternion.Slerp(Quaternion.identity, to, t) * from);
+    }
+
+    /// <summary>颜色渐变</summary>
+    public static TweenItem color(GameObject obj, Color to, float time)
+    {
+        Renderer r = obj.GetComponent<Renderer>();
+        if (r == null) return AddTween(obj, 0f, null);
+        Color from = r.material.color;
+        return AddTween(obj, time, t => r.material.color = Color.Lerp(from, to, t));
+    }
+
+    /// <summary>透明度渐变</summary>
+    public static TweenItem alpha(GameObject obj, float to, float time)
+    {
+        Renderer r = obj.GetComponent<Renderer>();
+        if (r == null) return AddTween(obj, 0f, null);
+        return AddTween(obj, time, t =>
+        {
+            Color c = r.material.color;
+            r.material.color = new Color(c.r, c.g, c.b, Mathf.Lerp(c.a, to, t));
+        });
+    }
+
+    /// <summary>值渐变（泛用回调）</summary>
+    public static TweenItem value(float from, float to, float time, Action<float> onUpdate)
+    {
+        return AddTween(time, t => onUpdate?.Invoke(Mathf.Lerp(from, to, t)));
+    }
+
     public struct TweenItemHandle : IDisposable
     {
         private uint nVersion;
@@ -141,6 +235,7 @@ public static partial class SimpleTween
         public float sumTime = 0f;
         public int nLoopCount = 0;
         public int nLoopPingTong = 0;
+        public SimpleTweenType nType = SimpleTweenType.linear;
         public Action<float> updateFunc = null;
         public Action finishFunc = null;
 
@@ -165,6 +260,7 @@ public static partial class SimpleTween
 
             nLoopCount = 0;
             nLoopPingTong = 0;
+            nType = SimpleTweenType.linear;
         }
 
         public TweenItemHandle GetHandle()
@@ -224,6 +320,12 @@ public static partial class SimpleTween
         public TweenItem SetOnUpdateFunc(Action<float> mFunc)
         {
             this.updateFunc = mFunc;
+            return this;
+        }
+
+        public TweenItem SetEase(SimpleTweenType easeType)
+        {
+            this.nType = easeType;
             return this;
         }
     }

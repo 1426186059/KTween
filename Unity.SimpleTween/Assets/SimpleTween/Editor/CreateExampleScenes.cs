@@ -34,13 +34,7 @@ public static class CreateExampleScenes
         CreateScene("AllDemos", "全部示例合集", typeof(ExampleRunner), null, Color.white);
 
         // ---- LT 风格示例 ----
-        CreateScene("LT_Basic", "LT-GeneralBasic", typeof(LT_Style_GeneralBasic), null, Color.white);
-        CreateScene("LT_Easing", "LT-EasingTypes", typeof(LT_Style_EasingTypes), null, Color.white);
-        CreateScene("LT_Sequencer", "LT-Sequencer", typeof(LT_Style_Sequencer), null, Color.white);
-        CreateScene("LT_CameraShake", "LT-CameraShake", typeof(LT_Style_CameraShake), null, Color.white);
-        CreateScene("LT_Path", "LT-Path", typeof(LT_Style_Path), null, Color.white);
-        CreateScene("LT_Following", "LT-Following", typeof(LT_Style_Following), null, Color.white);
-        CreateScene("LT_AllDemos", "LT-全部合集", typeof(LT_ExampleRunner), null, Color.white);
+        // 已移除: LT 风格示例场景尚未实现
 
         AssetDatabase.Refresh();
         Debug.Log($"成功创建 {ScenesDir} 目录下的所有示例场景！");
@@ -80,13 +74,7 @@ public static class CreateExampleScenes
 
         // -------------------- 创建可视化物体 + 挂示例脚本 --------------------
 
-        if (componentType == typeof(ExampleRunner) || componentType == typeof(LT_ExampleRunner)
-            || componentType == typeof(LT_Style_GeneralBasic)
-            || componentType == typeof(LT_Style_EasingTypes)
-            || componentType == typeof(LT_Style_Sequencer)
-            || componentType == typeof(LT_Style_CameraShake)
-            || componentType == typeof(LT_Style_Path)
-            || componentType == typeof(LT_Style_Following))
+        if (componentType == typeof(ExampleRunner))
         {
             var go = new GameObject(displayName);
             go.transform.position = Vector3.zero;
@@ -281,14 +269,6 @@ public class ExampleSceneCreatorWindow : EditorWindow
         new ExampleEntry { Name = "13 - 路径运动", FileName = "PathMovement", ComponentType = typeof(Example_13_PathMovement), Description = "沿多点路径运动" },
         new ExampleEntry { Name = "AllInOne 合集", FileName = "AllInOne", ComponentType = typeof(Example_AllInOne), Description = "20 种用法合集" },
         new ExampleEntry { Name = "全部示例合集", FileName = "AllDemos", ComponentType = typeof(ExampleRunner), Description = "所有示例可视化展示" },
-        // ---- LT 风格 ----
-        new ExampleEntry { Name = "LT-GeneralBasic", FileName = "LT_Basic", ComponentType = typeof(LT_Style_GeneralBasic), Description = "旋转/缩放/移动/延迟" },
-        new ExampleEntry { Name = "LT-EasingTypes", FileName = "LT_Easing", ComponentType = typeof(LT_Style_EasingTypes), Description = "10 种缓动曲线" },
-        new ExampleEntry { Name = "LT-Sequencer", FileName = "LT_Sequencer", ComponentType = typeof(LT_Style_Sequencer), Description = "AppendTween 序列动画" },
-        new ExampleEntry { Name = "LT-CameraShake", FileName = "LT_CameraShake", ComponentType = typeof(LT_Style_CameraShake), Description = "相机震动" },
-        new ExampleEntry { Name = "LT-Path", FileName = "LT_Path", ComponentType = typeof(LT_Style_Path), Description = "路径运动" },
-        new ExampleEntry { Name = "LT-Following", FileName = "LT_Following", ComponentType = typeof(LT_Style_Following), Description = "5 种跟随模式" },
-        new ExampleEntry { Name = "LT-全部合集", FileName = "LT_AllDemos", ComponentType = typeof(LT_ExampleRunner), Description = "LT 风格全部示例" },
     };
 
     private void OnGUI()
