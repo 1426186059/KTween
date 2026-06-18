@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// LeanTween 兼容 API 层 — 内部调用 SimpleTween 实现
@@ -126,22 +127,40 @@ public static class SimpleTweenEx
     public static SimpleTween.TweenItem color(GameObject obj, Color to, float time)
     {
         var r = obj.GetComponent<Renderer>();
-        if (r == null) return SimpleTween.AddTween(obj, 0f, null);
-        Color from = r.material.color;
+        var from = r.material.color;
         return SimpleTween.AddTween(obj, time, fPercent =>
         {
             r.material.color = Color.Lerp(from, to, fPercent);
         });
     }
 
+    public static SimpleTween.TweenItem color(Graphic obj, Color to, float time)
+    {
+        var from = obj.color;
+        return SimpleTween.AddTween(obj.gameObject, time, fPercent =>
+        {
+            obj.color = Color.Lerp(from, to, fPercent);
+        });
+    }
+
     public static SimpleTween.TweenItem alpha(GameObject obj, float to, float time)
     {
         var r = obj.GetComponent<Renderer>();
-        if (r == null) return SimpleTween.AddTween(obj, 0f, null);
         return SimpleTween.AddTween(obj, time, fPercent =>
         {
             Color c = r.material.color;
             r.material.color = new Color(c.r, c.g, c.b,
+                Mathf.Lerp(c.a, to, fPercent));
+        });
+    }
+
+    public static SimpleTween.TweenItem alpha(Graphic obj, float to, float time)
+    {
+        var from = obj.color;
+        return SimpleTween.AddTween(obj.gameObject, time, fPercent =>
+        {
+            Color c = obj.color;
+            obj.color = new Color(c.r, c.g, c.b,
                 Mathf.Lerp(c.a, to, fPercent));
         });
     }
