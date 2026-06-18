@@ -8,6 +8,5 @@ public class SimpleTweenTest : MonoBehaviour
         {
             gameObject.transform.localPosition = SimpleTweenFunc.easeLinear(Vector3.zero, Vector3.one * 10, fTimePercent);
         }).GetHandle();
-
     }
 }

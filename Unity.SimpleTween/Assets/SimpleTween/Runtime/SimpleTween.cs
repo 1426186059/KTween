@@ -169,6 +169,12 @@ public static partial class SimpleTween
             nType = SimpleTweenType.easeLinear;
         }
 
+        public void UpdateFunc(float fPercent)
+        {
+            var nTargetPercentValue = SimpleTweenFunc.ApplyEase(nType, fPercent);
+            this.updateFunc?.Invoke(nTargetPercentValue);
+        }
+
         public TweenItemHandle GetHandle()
         {
             return new TweenItemHandle(this);

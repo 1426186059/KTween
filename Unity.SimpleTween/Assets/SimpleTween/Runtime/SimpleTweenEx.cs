@@ -15,8 +15,8 @@ public static class SimpleTweenEx
         Vector3 from = obj.transform.position;
         return SimpleTween.AddTween(obj, time, fPercent =>
         {
-            obj.transform.position = Vector3.Lerp(from, to, SimpleTweenFunc.ApplyEase(nType, fPercent));
-        });
+            obj.transform.position = Vector3.Lerp(from, to, fPercent);
+        }).SetEase(nType);
     }
 
     public static SimpleTween.TweenItem moveX(GameObject obj, float x, float time, SimpleTweenType nType = SimpleTweenType.easeLinear)
@@ -25,9 +25,9 @@ public static class SimpleTweenEx
         return SimpleTween.AddTween(obj, time, fPercent =>
         {
             obj.transform.position = new Vector3(
-                Mathf.Lerp(from.x, x, SimpleTweenFunc.ApplyEase(nType, fPercent)),
+                Mathf.Lerp(from.x, x, fPercent),
                 from.y, from.z);
-        });
+        }).SetEase(nType);
     }
 
     public static SimpleTween.TweenItem moveY(GameObject obj, float y, float time, SimpleTweenType nType = SimpleTweenType.easeLinear)
@@ -37,9 +37,9 @@ public static class SimpleTweenEx
         {
             obj.transform.position = new Vector3(
                 from.x,
-                Mathf.Lerp(from.y, y, SimpleTweenFunc.ApplyEase(nType, fPercent)),
+                Mathf.Lerp(from.y, y, fPercent),
                 from.z);
-        });
+        }).SetEase(nType);
     }
 
     public static SimpleTween.TweenItem moveZ(GameObject obj, float z, float time, SimpleTweenType nType = SimpleTweenType.easeLinear)
@@ -49,8 +49,8 @@ public static class SimpleTweenEx
         {
             obj.transform.position = new Vector3(
                 from.x, from.y,
-                Mathf.Lerp(from.z, z, SimpleTweenFunc.ApplyEase(nType, fPercent)));
-        });
+                Mathf.Lerp(from.z, z, fPercent));
+        }).SetEase(nType);
     }
 
     public static SimpleTween.TweenItem moveLocal(GameObject obj, Vector3 to, float time, SimpleTweenType nType = SimpleTweenType.easeLinear)
@@ -58,8 +58,8 @@ public static class SimpleTweenEx
         Vector3 from = obj.transform.localPosition;
         return SimpleTween.AddTween(obj, time, fPercent =>
         {
-            obj.transform.localPosition = Vector3.Lerp(from, to, SimpleTweenFunc.ApplyEase(nType, fPercent));
-        });
+            obj.transform.localPosition = Vector3.Lerp(from, to, fPercent);
+        }).SetEase(nType);
     }
 
     public static SimpleTween.TweenItem moveLocalX(GameObject obj, float x, float time, SimpleTweenType nType = SimpleTweenType.easeLinear)
@@ -68,9 +68,9 @@ public static class SimpleTweenEx
         return SimpleTween.AddTween(obj, time, fPercent =>
         {
             obj.transform.localPosition = new Vector3(
-                Mathf.Lerp(from.x, x, SimpleTweenFunc.ApplyEase(nType, fPercent)),
+                Mathf.Lerp(from.x, x, fPercent),
                 from.y, from.z);
-        });
+        }).SetEase(nType);
     }
 
     public static SimpleTween.TweenItem moveLocalY(GameObject obj, float y, float time, SimpleTweenType nType = SimpleTweenType.easeLinear)
@@ -80,9 +80,9 @@ public static class SimpleTweenEx
         {
             obj.transform.localPosition = new Vector3(
                 from.x,
-                Mathf.Lerp(from.y, y, SimpleTweenFunc.ApplyEase(nType, fPercent)),
+                Mathf.Lerp(from.y, y, fPercent),
                 from.z);
-        });
+        }).SetEase(nType);
     }
 
     public static SimpleTween.TweenItem moveLocalZ(GameObject obj, float z, float time, SimpleTweenType nType = SimpleTweenType.easeLinear)
@@ -92,8 +92,8 @@ public static class SimpleTweenEx
         {
             obj.transform.localPosition = new Vector3(
                 from.x, from.y,
-                Mathf.Lerp(from.z, z, SimpleTweenFunc.ApplyEase(nType, fPercent)));
-        });
+                Mathf.Lerp(from.z, z, fPercent));
+        }).SetEase(nType);
     }
 
     // ==============================================================
@@ -104,8 +104,8 @@ public static class SimpleTweenEx
         Vector3 from = obj.transform.localScale;
         return SimpleTween.AddTween(obj, time, fPercent =>
         {
-            obj.transform.localScale = Vector3.Lerp(from, to, SimpleTweenFunc.ApplyEase(nType, fPercent));
-        });
+            obj.transform.localScale = Vector3.Lerp(from, to, fPercent);
+        }).SetEase(nType);
     }
 
     // ==============================================================
@@ -117,8 +117,8 @@ public static class SimpleTweenEx
         Vector3 delta = axis.normalized * angle;
         return SimpleTween.AddTween(obj, time, fPercent =>
         {
-            obj.transform.eulerAngles = startEuler + delta * SimpleTweenFunc.ApplyEase(nType, fPercent);
-        });
+            obj.transform.eulerAngles = startEuler + delta * fPercent;
+        }).SetEase(nType);
     }
 
     public static SimpleTween.TweenItem rotateAroundLocal(GameObject obj, Vector3 axis, float angle, float time, SimpleTweenType nType = SimpleTweenType.easeLinear)
@@ -128,8 +128,8 @@ public static class SimpleTweenEx
         return SimpleTween.AddTween(obj, time, fPercent =>
         {
             obj.transform.localRotation = Quaternion.Slerp(
-                Quaternion.identity, delta, SimpleTweenFunc.ApplyEase(nType, fPercent)) * startRot;
-        });
+                Quaternion.identity, delta, fPercent) * startRot;
+        }).SetEase(nType);
     }
 
     // ==============================================================
@@ -142,8 +142,8 @@ public static class SimpleTweenEx
         Color from = r.material.color;
         return SimpleTween.AddTween(obj, time, fPercent =>
         {
-            r.material.color = Color.Lerp(from, to, SimpleTweenFunc.ApplyEase(nType, fPercent));
-        });
+            r.material.color = Color.Lerp(from, to, fPercent);
+        }).SetEase(nType);
     }
 
     public static SimpleTween.TweenItem alpha(GameObject obj, float to, float time, SimpleTweenType nType = SimpleTweenType.easeLinear)
@@ -154,8 +154,8 @@ public static class SimpleTweenEx
         {
             Color c = r.material.color;
             r.material.color = new Color(c.r, c.g, c.b,
-                Mathf.Lerp(c.a, to, SimpleTweenFunc.ApplyEase(nType, fPercent)));
-        });
+                Mathf.Lerp(c.a, to, fPercent));
+        }).SetEase(nType);
     }
 
     public static SimpleTween.TweenItem alphaCanvas(CanvasGroup cg, float to, float time, SimpleTweenType nType = SimpleTweenType.easeLinear)
@@ -163,7 +163,7 @@ public static class SimpleTweenEx
         float from = cg.alpha;
         return SimpleTween.AddTween(cg.gameObject, time, fPercent =>
         {
-            cg.alpha = Mathf.Lerp(from, to, SimpleTweenFunc.ApplyEase(nType, fPercent));
-        });
+            cg.alpha = Mathf.Lerp(from, to, fPercent);
+        }).SetEase(nType);
     }
 }
