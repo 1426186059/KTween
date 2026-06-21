@@ -41,7 +41,7 @@ public static partial class KTween
 
                     mItem.time = Mathf.Clamp(mItem.time, 0, mItem.sumTime);
                     float fTimePercent = mItem.time / mItem.sumTime;
-                    mItem.UpdateFunc(fTimePercent);
+                    mItem.updateFunc?.Invoke(KTweenFunc.ApplyEase(mItem.nType, fTimePercent));
 
                     if (mItem.nLoopPingTong == 2)
                     {
@@ -75,7 +75,7 @@ public static partial class KTween
                     mItem.time += Time.deltaTime;
                     mItem.time = Mathf.Clamp(mItem.time, 0, mItem.sumTime);
                     float fTimePercent = mItem.time / mItem.sumTime;
-                    mItem.UpdateFunc(fTimePercent);
+                    mItem.updateFunc?.Invoke(KTweenFunc.ApplyEase(mItem.nType, fTimePercent));
 
                     if (fTimePercent >= 1.0f)
                     {

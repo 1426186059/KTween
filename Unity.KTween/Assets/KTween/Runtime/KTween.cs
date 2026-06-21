@@ -169,12 +169,6 @@ public static partial class KTween
             nType = KTweenType.linear;
         }
 
-        public void UpdateFunc(float fPercent)
-        {
-            var nTargetPercentValue = KTweenFunc.ApplyEase(nType, fPercent);
-            this.updateFunc?.Invoke(nTargetPercentValue);
-        }
-
         public TweenItemHandle GetHandle()
         {
             return new TweenItemHandle(this);
