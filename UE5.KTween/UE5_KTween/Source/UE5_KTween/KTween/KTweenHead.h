@@ -1,0 +1,322 @@
+﻿#pragma once
+
+#define DEFAULT_TWEEN_MAX_COUNT 1500
+#define USE_LinkedList
+
+#include "CoreMinimal.h"
+#include "Engine/Engine.h"
+#include "Engine/World.h"
+#include "GameFramework/Actor.h"
+#include "KTweenHead.generated.h"
+
+class KTween;
+namespace KTweenAPI
+{
+    typedef TFunction<void(void)> ActionDelegate;
+    typedef TFunction<void(float)> Action_Float_Delegate;
+
+    class KTweenByList;
+    class KTweenItem;
+    class ObjectPool;
+
+    class KTweenItem:public TSharedFromThis<KTweenItem>
+    {
+        friend class ObjectPool;
+    public:
+        TWeakObjectPtr<UObject> bindObj;
+        bool toggle;
+        float delay;
+        float time;
+        float sumTime;
+        int32 nLoopCount;
+        int32 nLoopPingTong;
+        uint32 nVersion;
+        Action_Float_Delegate updateFunc;
+        ActionDelegate finishFunc;
+        ActionDelegate startFunc;
+
+        FVector From;
+        FVector To;
+
+#ifdef USE_LinkedList
+        TDoubleLinkedList<TSharedPtr<KTweenItem>>::TDoubleLinkedListNode* mNodeEntry = nullptr;
+        TDoubleLinkedList<TSharedPtr<KTweenItem>>::TDoubleLinkedListNode* GetNodeEntry()
+        {
+            if (this->mNodeEntry == nullptr)
+            {
+                this->mNodeEntry = new TDoubleLinkedList<TSharedPtr<KTweenItem>>::TDoubleLinkedListNode(this->GetTSharedPtr());
+            }
+            return this->mNodeEntry;
+        }
+#endif
+
+        ~KTweenItem()
+        {
+            UE_LOG(LogTemp, Log, TEXT("~KTweenItem Destroy"));
+
+#ifdef USE_LinkedList
+            if (mNodeEntry)
+            {
+                delete mNodeEntry;
+                mNodeEntry = nullptr;
+            }
+#endif
+        }
+    private:
+        void OnPoolPop()
+        {
+            
+        }
+
+        void OnPoolRecycle()
+        {
+            Reset();
+            IncrementVersion();
+        }
+
+        void OnPoolDestory()
+        {
+#ifdef USE_LinkedList
+            if (mNodeEntry)
+            {
+                delete mNodeEntry;
+                mNodeEntry = nullptr;
+            }
+#endif
+        }
+
+        KTweenItem()
+        {
+            Reset();
+            IncrementVersion();
+        }
+
+        void IncrementVersion()
+        {
+            nVersion++;
+            if (nVersion == 0)
+            {
+                nVersion++;
+            }
+        }
+
+        void Reset()
+        {
+            bindObj = nullptr;
+            toggle = false;
+
+            delay = 0.0;
+            time = 0.0;
+            sumTime = 0.0;
+            updateFunc.Reset();
+            finishFunc.Reset();
+            startFunc.Reset();
+            nLoopCount = 0;
+            nLoopPingTong = 0;
+        }
+
+        static TSharedPtr<KTweenItem> Create()
+        {
+            return MakeShareable(new KTweenItem());
+        }
+    public:
+        TSharedPtr<KTweenItem> GetTSharedPtr()
+        {
+            return AsShared();
+        }
+
+        TSharedPtr<KTweenItem> cancel()
+        {
+            toggle = false;
+            return GetTSharedPtr();
+        }
+
+        TSharedPtr<KTweenItem> SetDelay(float fTime)
+        {
+            this->delay = fTime;
+            return GetTSharedPtr();
+        }
+
+        TSharedPtr<KTweenItem> SetLoop(int nCount = -1)
+        {
+            this->nLoopCount = nCount;
+            return GetTSharedPtr();
+        }
+
+        TSharedPtr<KTweenItem> SetLoopPingPong(int nCount = -1)
+        {
+            this->nLoopCount = nCount;
+            nLoopPingTong = 1;
+            return GetTSharedPtr();
+        }
+
+        void AppendTween(KTweenItem* mItem)
+        {
+            float mTweenSumTime = this->delay + this->sumTime;
+            mItem->delay += mTweenSumTime;
+        }
+
+        TSharedPtr<KTweenItem> SetOnUpdateFunc(Action_Float_Delegate func)
+        {
+            this->updateFunc = func;
+            return GetTSharedPtr();
+        }
+
+        TSharedPtr<KTweenItem> SetOnStartFunc(ActionDelegate func)
+        {
+            this->startFunc = func;
+            return GetTSharedPtr();
+        }
+
+        TSharedPtr<KTweenItem> SetOnCompleteFunc(ActionDelegate func)
+        {
+            this->finishFunc = func;
+            return GetTSharedPtr();
+        }
+    };
+
+    class ObjectPool
+    {
+    private:
+        TArray<TSharedPtr<KTweenItem>> mObjectPool;
+        int nMaxCapacity = 0;
+    public:
+        ObjectPool()
+        {
+            SetMaxCapacity(DEFAULT_TWEEN_MAX_COUNT);
+        }
+
+        void SetMaxCapacity(int nCapacity = 1)
+        {
+            this->nMaxCapacity = nCapacity;
+        }
+
+        TSharedPtr<KTweenItem> Pop()
+        {
+            if (mObjectPool.Num() > 0)
+            {
+                auto mItem = mObjectPool.Pop();
+                mItem->OnPoolPop();
+                return mItem;
+            }
+            else
+            {
+                return KTweenItem::Create();
+            }
+        }
+
+        void recycle(TSharedPtr<KTweenItem> t)
+        {
+            if (mObjectPool.Num() >= nMaxCapacity)
+            {
+                t->OnPoolDestory();
+                t.Reset();
+            }
+            else
+            {
+                t->OnPoolRecycle();
+                mObjectPool.Add(t);
+            }
+        }
+    };
+
+#ifdef USE_LinkedList
+    class KTweenByLinkedList
+    {
+    private:
+        ObjectPool mItemPool;
+        TDoubleLinkedList<TSharedPtr<KTweenItem>> mTweenT;
+        AKTweenMgr* defaultBindObj;
+    public:
+        KTweenByLinkedList(AKTweenMgr* mDefaultBindObj);
+
+        void Update(float DeltaTime);
+        void SetMaxTweenCount(int nCount);
+        void Cancel(UObject* obj);
+        void CancelAll();
+        TSharedPtr<KTweenAPI::KTweenItem> AddTween(
+            UObject* obj,
+            float time,
+            Action_Float_Delegate updateFunc = nullptr,
+            ActionDelegate finishFunc = nullptr);
+
+        TDoubleLinkedList<TSharedPtr<KTweenItem>>::TDoubleLinkedListNode* DoRemove(
+            TSharedPtr<KTweenItem> mItem);
+
+    };
+
+#else
+    class KTweenByList
+    {
+    private:
+        ObjectPool mItemPool;
+        TArray<TSharedPtr<KTweenItem>> mTweenT;
+        AKTweenMgr* defaultBindObj;
+    public:
+        KTweenByList(AKTweenMgr* mDefaultBindObj);
+
+        void Update(float DeltaTime);
+        void SetMaxTweenCount(int nCount);
+        void Cancel(UObject* obj);
+        void CancelAll();
+        TSharedPtr<KTweenAPI::KTweenItem> AddTween(
+            UObject* obj,
+            float time,
+            Action_Float_Delegate updateFunc = nullptr,
+            ActionDelegate finishFunc = nullptr);
+    };
+#endif
+
+};
+
+
+UCLASS()
+class UE5_KTWEEN_API AKTweenMgr : public AActor
+{
+    GENERATED_BODY()
+
+protected:
+    AKTweenMgr();
+    virtual void BeginPlay() override;
+    virtual void EndPlay(EEndPlayReason::Type Reason) override;
+public:
+    virtual void Tick(float DeltaTime) override;
+    void EnsureManager();
+public:
+    static AKTweenMgr* GetSingleton(bool bCreate = true)
+    {
+        static AKTweenMgr* Instance = nullptr;
+        if (Instance == nullptr && bCreate)
+        {
+            UWorld* World = nullptr;
+            if (GEngine)
+            {
+                for (const FWorldContext& Context : GEngine->GetWorldContexts())
+                {
+                    World = Context.World();
+                    if (World && World->IsGameWorld()) break;
+                }
+            }
+            if (World)
+            {
+                FActorSpawnParameters SpawnParams;
+                SpawnParams.Name = TEXT("KTween~");
+                SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+                Instance = Cast<AKTweenMgr>(World->SpawnActor(AKTweenMgr::StaticClass(), &FVector::ZeroVector, &FRotator::ZeroRotator, SpawnParams));
+            }
+        }
+        return Instance;
+    }
+
+private:
+    KTweenAPI::KTweenByLinkedList* mManager;
+
+public:
+    void Update(float DeltaTime);
+    void SetMaxTweenCount(int nCount);
+    void Cancel(UObject* obj);
+    void CancelAll();
+    TSharedPtr<KTweenAPI::KTweenItem> AddTween(UObject* obj, float time, KTweenAPI::Action_Float_Delegate updateFunc = nullptr, KTweenAPI::ActionDelegate finishFunc = nullptr);
+
+
+};

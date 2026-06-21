@@ -1,0 +1,22 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{36324599-450C-9950-DA93-0AAA8D45A46B}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "UE5_KTween",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "ModelingToolsEditorMode",
+			"Enabled": true,
+			"TargetAllowList": [
+				"Editor"
+			]
+		}
+	]
+}
