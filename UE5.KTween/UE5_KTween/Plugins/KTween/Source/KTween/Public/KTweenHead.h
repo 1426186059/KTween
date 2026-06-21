@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #define DEFAULT_TWEEN_MAX_COUNT 1500
 #define USE_LinkedList
@@ -14,6 +14,17 @@ namespace KTweenAPI
 {
     typedef TFunction<void(void)> ActionDelegate;
     typedef TFunction<void(float)> Action_Float_Delegate;
+
+    enum EaseType
+    {
+        linear, easeOutQuad, easeInQuad, easeInOutQuad, easeInCubic, easeOutCubic, easeInOutCubic,
+        easeInQuart, easeOutQuart, easeInOutQuart,
+        easeInQuint, easeOutQuint, easeInOutQuint, easeInSine, easeOutSine, easeInOutSine,
+        easeInExpo, easeOutExpo, easeInOutExpo, easeInCirc, easeOutCirc, easeInOutCirc,
+        easeInBounce, easeOutBounce, easeInOutBounce, easeInBack, easeOutBack, easeInOutBack,
+        easeInElastic, easeOutElastic, easeInOutElastic,
+        easeSpring, easeShake, punch, once, clamp, pingPong, animationCurve
+    };
 
     class KTweenByList;
     class KTweenItem;
@@ -31,6 +42,7 @@ namespace KTweenAPI
         int32 nLoopCount;
         int32 nLoopPingTong;
         uint32 nVersion;
+        EaseType nEaseType;
         Action_Float_Delegate updateFunc;
         ActionDelegate finishFunc;
         ActionDelegate startFunc;
@@ -113,6 +125,7 @@ namespace KTweenAPI
             startFunc.Reset();
             nLoopCount = 0;
             nLoopPingTong = 0;
+            nEaseType = KTweenAPI::linear;
         }
 
         static TSharedPtr<KTweenItem> Create()
@@ -147,6 +160,12 @@ namespace KTweenAPI
         {
             this->nLoopCount = nCount;
             nLoopPingTong = 1;
+            return GetTSharedPtr();
+        }
+
+        TSharedPtr<KTweenItem> SetEase(EaseType EaseType)
+        {
+            this->nEaseType = EaseType;
             return GetTSharedPtr();
         }
 

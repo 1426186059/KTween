@@ -32,7 +32,7 @@ public class Example_07_CancelAndHandle : MonoBehaviour
         {
             if (!m_IsCancelled)
             {
-                transform.position = KTweenFunc.easeLinear(from, from + Vector3.right * 5f, t);
+                transform.position = KTweenFunc.linear(from, from + Vector3.right * 5f, t);
             }
         });
 

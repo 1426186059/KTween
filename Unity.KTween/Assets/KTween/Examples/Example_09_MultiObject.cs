@@ -33,7 +33,7 @@ public class Example_09_MultiObject : MonoBehaviour
             {
                 // 将时间错开相位
                 float p = (t + phase) % 1f;
-                go.transform.position = KTweenFunc.easeLinear(from, to, p);
+                go.transform.position = KTweenFunc.linear(from, to, p);
             }).SetLoop(-1); // 无限循环
         }
     }

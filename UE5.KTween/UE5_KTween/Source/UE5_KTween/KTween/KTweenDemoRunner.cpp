@@ -92,7 +92,7 @@ TArray<AActor*> AKTweenDemoRunner::SpawnGridBatch(int32 CountX, int32 CountY, fl
 }
 
 // ──────────────────────────────────────────────────────────────────────
-// 1. Basic Move — objects bounce up and down
+// 1. Basic Move — 演示 SetEase 链式调用，跟 Unity 一样
 // ──────────────────────────────────────────────────────────────────────
 void AKTweenDemoRunner::Demo_BasicMove(const TArray<AActor*>& Targets)
 {
@@ -101,18 +101,19 @@ void AKTweenDemoRunner::Demo_BasicMove(const TArray<AActor*>& Targets)
         FVector StartLoc = Targets[i]->GetActorLocation();
         FVector EndLoc = StartLoc + FVector(0, 0, 400);
         int32 Idx = i;
-        auto EaseFunc = KTween::GetEaseFunc<FVector>(KTween::EaseType::easeOutQuad);
+
+        // T 已被 SetEase 自动缓动，直接 Lerp（与 Unity 用法一致）
         KTween::AddTween(Targets[i], Duration,
-            [Targets, Idx, StartLoc, EndLoc, EaseFunc](float T)
+            [Targets, Idx, StartLoc, EndLoc](float T)
             {
-                Targets[Idx]->SetActorLocation(EaseFunc(StartLoc, EndLoc, T));
+                Targets[Idx]->SetActorLocation(FMath::Lerp(StartLoc, EndLoc, T));
             }
-        )->SetLoopPingPong(-1);
+        )->SetEase(KTween::EaseType::easeOutQuad)->SetLoopPingPong(-1);
     }
 }
 
 // ──────────────────────────────────────────────────────────────────────
-// 2. Scale Pulse — 使用新 Apply() 接口
+// 2. Scale Pulse — SetEase 自动缓动
 // ──────────────────────────────────────────────────────────────────────
 void AKTweenDemoRunner::Demo_ScalePulse(const TArray<AActor*>& Targets)
 {
@@ -122,28 +123,26 @@ void AKTweenDemoRunner::Demo_ScalePulse(const TArray<AActor*>& Targets)
         KTween::AddTween(Targets[i], Duration * 0.5f,
             [Targets, Idx](float T)
             {
-                FVector S = KTween::EaseFunc::Apply<FVector>(FVector(0.4f), FVector(1.5f), T, KTween::EaseType::easeInOutSine);
-                Targets[Idx]->SetActorScale3D(S);
+                Targets[Idx]->SetActorScale3D(FMath::Lerp(FVector(0.4f), FVector(1.5f), T));
             }
-        )->SetLoopPingPong(-1);
+        )->SetEase(KTween::EaseType::easeInOutSine)->SetLoopPingPong(-1);
     }
 }
 
 // ──────────────────────────────────────────────────────────────────────
-// 3. Rotation
+// 3. Rotation — SetEase 自动缓动
 // ──────────────────────────────────────────────────────────────────────
 void AKTweenDemoRunner::Demo_Rotation(const TArray<AActor*>& Targets)
 {
     for (int32 i = 0; i < Targets.Num(); i++)
     {
         int32 Idx = i;
-        auto EaseFunc = KTween::GetEaseFunc<float>(KTween::EaseType::linear);
         KTween::AddTween(Targets[i], Duration,
-            [Targets, Idx, EaseFunc](float T)
+            [Targets, Idx](float T)
             {
-                Targets[Idx]->SetActorRotation(FRotator(0, EaseFunc(0, 360, T), 0));
+                Targets[Idx]->SetActorRotation(FRotator(0, 360.0f * T, 0));
             }
-        )->SetLoop(-1);
+        )->SetEase(KTween::EaseType::linear)->SetLoop(-1);
     }
 }
 
@@ -159,20 +158,17 @@ void AKTweenDemoRunner::Demo_DelayAndChain(const TArray<AActor*>& Targets)
         FVector EndLoc = StartLoc + FVector(400, 0, 0);
         int32 Idx = i;
 
-        auto EaseOut = KTween::GetEaseFunc<FVector>(KTween::EaseType::easeOutQuad);
-        auto EaseIn = KTween::GetEaseFunc<FVector>(KTween::EaseType::easeInQuad);
-
         auto T1 = KTween::AddTween(Targets[i], Duration * 0.4f,
-            [Targets, Idx, StartLoc, MidLoc, EaseOut](float T)
+            [Targets, Idx, StartLoc, MidLoc](float T)
             {
-                Targets[Idx]->SetActorLocation(EaseOut(StartLoc, MidLoc, T));
-            });
+                Targets[Idx]->SetActorLocation(FMath::Lerp(StartLoc, MidLoc, T));
+            })->SetEase(KTween::EaseType::easeOutQuad);
 
         auto T2 = KTween::AddTween(Targets[i], Duration * 0.6f,
-            [Targets, Idx, MidLoc, EndLoc, EaseIn](float T)
+            [Targets, Idx, MidLoc, EndLoc](float T)
             {
-                Targets[Idx]->SetActorLocation(EaseIn(MidLoc, EndLoc, T));
-            });
+                Targets[Idx]->SetActorLocation(FMath::Lerp(MidLoc, EndLoc, T));
+            })->SetEase(KTween::EaseType::easeInQuad);
 
         T1->AppendTween(T2.Get());
     }
@@ -188,13 +184,12 @@ void AKTweenDemoRunner::Demo_Loop(const TArray<AActor*>& Targets)
         FVector StartLoc = Targets[i]->GetActorLocation();
         FVector EndLoc = StartLoc + FVector(300, 0, 0);
         int32 Idx = i;
-        auto EaseFunc = KTween::GetEaseFunc<FVector>(KTween::EaseType::easeInOutCubic);
         KTween::AddTween(Targets[i], Duration * 0.3f,
-            [Targets, Idx, StartLoc, EndLoc, EaseFunc](float T)
+            [Targets, Idx, StartLoc, EndLoc](float T)
             {
-                Targets[Idx]->SetActorLocation(EaseFunc(StartLoc, EndLoc, T));
+                Targets[Idx]->SetActorLocation(FMath::Lerp(StartLoc, EndLoc, T));
             }
-        )->SetLoop(i < Targets.Num() / 2 ? 5 : -1);
+        )->SetEase(KTween::EaseType::easeInOutCubic)->SetLoop(i < Targets.Num() / 2 ? 5 : -1);
     }
 }
 
@@ -208,13 +203,12 @@ void AKTweenDemoRunner::Demo_PingPong(const TArray<AActor*>& Targets)
         FVector StartLoc = Targets[i]->GetActorLocation();
         FVector EndLoc = StartLoc + FVector(0, 300 * ((i % 2 == 0) ? 1 : -1), 0);
         int32 Idx = i;
-        auto EaseFunc = KTween::GetEaseFunc<FVector>(KTween::EaseType::easeInOutSine);
         KTween::AddTween(Targets[i], Duration * 0.3f,
-            [Targets, Idx, StartLoc, EndLoc, EaseFunc](float T)
+            [Targets, Idx, StartLoc, EndLoc](float T)
             {
-                Targets[Idx]->SetActorLocation(EaseFunc(StartLoc, EndLoc, T));
+                Targets[Idx]->SetActorLocation(FMath::Lerp(StartLoc, EndLoc, T));
             }
-        )->SetLoopPingPong(-1);
+        )->SetEase(KTween::EaseType::easeInOutSine)->SetLoopPingPong(-1);
     }
 }
 
@@ -244,14 +238,12 @@ void AKTweenDemoRunner::Demo_EaseComparison(const TArray<AActor*>& Targets)
         FVector StartLoc = Targets[i]->GetActorLocation();
         FVector EndLoc = StartLoc + FVector(500, 0, 0);
         int32 Idx = i;
-        KTween::EaseType Type = EaseTypes[i];
         KTween::AddTween(Targets[i], Duration * 1.5f,
-            [Targets, Idx, StartLoc, EndLoc, Type](float T)
+            [Targets, Idx, StartLoc, EndLoc](float T)
             {
-                FVector Pos = KTween::EaseFunc::Apply<FVector>(StartLoc, EndLoc, T, Type);
-                Targets[Idx]->SetActorLocation(Pos);
+                Targets[Idx]->SetActorLocation(FMath::Lerp(StartLoc, EndLoc, T));
             }
-        )->SetLoopPingPong(-1);
+        )->SetEase(EaseTypes[i])->SetLoopPingPong(-1);
     }
 }
 
@@ -267,31 +259,27 @@ void AKTweenDemoRunner::Demo_MultiTweenCombined(const TArray<AActor*>& Targets)
         float Offset = i * 0.12f;
         int32 Idx = i;
 
-        auto EaseMove = KTween::GetEaseFunc<FVector>(KTween::EaseType::easeInOutBack);
-        auto EaseScale = KTween::GetEaseFunc<FVector>(KTween::EaseType::easeInOutSine);
-        auto EaseRot = KTween::GetEaseFunc<float>(KTween::EaseType::easeInOutQuad);
-
         KTween::AddTween(Targets[i], Duration,
-            [Targets, Idx, StartLoc, EndLoc, EaseMove](float T)
+            [Targets, Idx, StartLoc, EndLoc](float T)
             {
-                Targets[Idx]->SetActorLocation(EaseMove(StartLoc, EndLoc, T));
+                Targets[Idx]->SetActorLocation(FMath::Lerp(StartLoc, EndLoc, T));
             }
-        )->SetDelay(Offset)->SetLoopPingPong(-1);
+        )->SetEase(KTween::EaseType::easeInOutBack)->SetDelay(Offset)->SetLoopPingPong(-1);
 
         KTween::AddTween(Targets[i], Duration * 0.5f,
-            [Targets, Idx, EaseScale](float T)
+            [Targets, Idx](float T)
             {
-                Targets[Idx]->SetActorScale3D(EaseScale(FVector(0.4f), FVector(1.2f), T));
+                Targets[Idx]->SetActorScale3D(FMath::Lerp(FVector(0.4f), FVector(1.2f), T));
             }
-        )->SetDelay(Offset)->SetLoopPingPong(-1);
+        )->SetEase(KTween::EaseType::easeInOutSine)->SetDelay(Offset)->SetLoopPingPong(-1);
 
         KTween::AddTween(Targets[i], Duration * 0.8f,
-            [Targets, Idx, EaseRot](float T)
+            [Targets, Idx](float T)
             {
-                float Angle = EaseRot(0, 360, T);
+                float Angle = 360.0f * T;
                 Targets[Idx]->SetActorRotation(FRotator(Angle * 0.5f, Angle, 0));
             }
-        )->SetDelay(Offset)->SetLoop(-1);
+        )->SetEase(KTween::EaseType::easeInOutQuad)->SetDelay(Offset)->SetLoop(-1);
     }
 }
 
@@ -307,13 +295,12 @@ void AKTweenDemoRunner::Demo_CancelHandle(const TArray<AActor*>& Targets)
         FVector StartLoc = Targets[i]->GetActorLocation();
         FVector EndLoc = StartLoc + FVector(0, 0, 500);
         int32 Idx = i;
-        auto EaseFunc = KTween::GetEaseFunc<FVector>(KTween::EaseType::easeInOutBounce);
         auto Item = KTween::AddTween(Targets[i], Duration * 0.5f,
-            [Targets, Idx, StartLoc, EndLoc, EaseFunc](float T)
+            [Targets, Idx, StartLoc, EndLoc](float T)
             {
-                Targets[Idx]->SetActorLocation(EaseFunc(StartLoc, EndLoc, T));
+                Targets[Idx]->SetActorLocation(FMath::Lerp(StartLoc, EndLoc, T));
             }
-        )->SetLoopPingPong(-1);
+        )->SetEase(KTween::EaseType::easeInOutBounce)->SetLoopPingPong(-1);
 
         Handles.Add(KTween::GetHandle(Item));
     }
@@ -341,13 +328,12 @@ void AKTweenDemoRunner::Demo_100Objects(const TArray<AActor*>& Targets)
         FVector EndLoc = StartLoc + FVector(0, 0, RandomHeight);
         float Offset = (i % 10) * 0.12f;
         int32 Idx = i;
-        auto EaseFunc = KTween::GetEaseFunc<FVector>(KTween::EaseType::easeInOutSine);
         KTween::AddTween(Targets[i], Duration * 0.5f,
-            [Targets, Idx, StartLoc, EndLoc, EaseFunc](float T)
+            [Targets, Idx, StartLoc, EndLoc](float T)
             {
-                Targets[Idx]->SetActorLocation(EaseFunc(StartLoc, EndLoc, T));
+                Targets[Idx]->SetActorLocation(FMath::Lerp(StartLoc, EndLoc, T));
             }
-        )->SetDelay(Offset)->SetLoopPingPong(-1);
+        )->SetEase(KTween::EaseType::easeInOutSine)->SetDelay(Offset)->SetLoopPingPong(-1);
     }
 
     // Second half: orbit around center + vertical oscillation
@@ -402,8 +388,8 @@ void AKTweenDemoRunner::RunAllDemos()
     // 6. PingPong (2x4 = 8)
     Demo_PingPong(SpawnGridBatch(2, 4, 150, FVector(-600, 0, 0)));
 
-    // 7. Ease Comparison (1x10 = 10)
-    Demo_EaseComparison(SpawnGridBatch(1, 10, 110, FVector(-400, 0, 0)));
+    // 7. Ease Comparison (4x8 = 32) — 测试全部 32 种缓动类型
+    Demo_EaseComparison(SpawnGridBatch(4, 8, 100, FVector(-300, 0, 0)));
 
     // 8. Combined (3x4 = 12)
     Demo_MultiTweenCombined(SpawnGridBatch(3, 4, 150, FVector(200, 0, 0)));

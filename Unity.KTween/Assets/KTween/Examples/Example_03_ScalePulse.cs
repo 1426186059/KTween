@@ -26,7 +26,7 @@ public class Example_03_ScalePulse : MonoBehaviour
 
         KTween.AddTween(gameObject, duration, (t) =>
         {
-            float s = KTweenFunc.easeLinear(minScale, maxScale, t);
+            float s = KTweenFunc.linear(minScale, maxScale, t);
             transform.localScale = m_OriginalScale * s;
         }).SetLoopPingPong(-1); // 无限 PingPong 循环
     }

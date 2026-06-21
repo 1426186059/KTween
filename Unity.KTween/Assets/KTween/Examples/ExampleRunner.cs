@@ -273,9 +273,9 @@ public class ExampleRunner : MonoBehaviour
 
         KTween.AddTween(cube, 1.5f, (t) =>
         {
-            cube.transform.position = KTweenFunc.easeLinear(startPos, endPos, t);
-            cube.transform.localScale = KTweenFunc.easeLinear(startScale, endScale, t);
-            cube.transform.eulerAngles = KTweenFunc.easeLinear(Vector3.zero, new Vector3(0f, 0f, 360f), t);
+            cube.transform.position = KTweenFunc.linear(startPos, endPos, t);
+            cube.transform.localScale = KTweenFunc.linear(startScale, endScale, t);
+            cube.transform.eulerAngles = KTweenFunc.linear(Vector3.zero, new Vector3(0f, 0f, 360f), t);
         }).SetLoopPingPong(-1);
     }
 

@@ -2,7 +2,7 @@ using UnityEngine;
 
 /// <summary>
 /// 示例脚本 01 - 基础移动 Tween
-/// 演示：使用 KTweenFunc.easeLinear 在 X 轴上往复移动
+/// 演示：使用 KTweenFunc.linear 在 X 轴上往复移动
 /// </summary>
 public class Example_01_BasicMove : MonoBehaviour
 {
@@ -26,7 +26,7 @@ public class Example_01_BasicMove : MonoBehaviour
         // 正向移动
         KTween.AddTween(gameObject, duration, (t) =>
         {
-            float x = KTweenFunc.easeLinear(0f, distance, t);
+            float x = KTweenFunc.linear(0f, distance, t);
             transform.position = m_StartPos + new Vector3(x, 0f, 0f);
         });
     }

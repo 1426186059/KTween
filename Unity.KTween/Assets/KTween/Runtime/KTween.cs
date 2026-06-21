@@ -141,7 +141,7 @@ public static partial class KTween
         public float sumTime = 0f;
         public int nLoopCount = 0;
         public int nLoopPingTong = 0;
-        public KTweenType nType = KTweenType.easeLinear;
+        public KTweenType nType = KTweenType.linear;
         public Action<float> updateFunc = null;
         public Action finishFunc = null;
 
@@ -166,7 +166,7 @@ public static partial class KTween
 
             nLoopCount = 0;
             nLoopPingTong = 0;
-            nType = KTweenType.easeLinear;
+            nType = KTweenType.linear;
         }
 
         public void UpdateFunc(float fPercent)

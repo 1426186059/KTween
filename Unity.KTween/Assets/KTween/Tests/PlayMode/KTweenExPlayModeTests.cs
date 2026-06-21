@@ -230,7 +230,7 @@ public class KTweenExPlayModeTests
     public IEnumerator Move_WithEaseOutBounce_CompletesCorrectly()
     {
         var item = KTweenEx.move(m_TestObject, new Vector3(5f, 0f, 0f), 0.2f);
-        item.SetEase(KTweenType.easeOutBounce);
+        item.SetEase(KTweenType.outBounce);
         yield return new WaitForSeconds(0.3f);
         Assert.AreEqual(5f, m_TestObject.transform.position.x, 0.1f);
     }
@@ -239,7 +239,7 @@ public class KTweenExPlayModeTests
     public IEnumerator Move_WithEaseInElastic_CompletesCorrectly()
     {
         var item = KTweenEx.move(m_TestObject, new Vector3(3f, 0f, 0f), 0.2f);
-        item.SetEase(KTweenType.easeInElastic);
+        item.SetEase(KTweenType.inElastic);
         yield return new WaitForSeconds(0.3f);
         Assert.AreEqual(3f, m_TestObject.transform.position.x, 0.1f);
     }
@@ -254,7 +254,7 @@ public class KTweenExPlayModeTests
         float x = 0f;
         var item = KTweenEx.move(m_TestObject, new Vector3(7f, 0f, 0f), 0.1f);
         item.SetDelay(0.3f);
-        item.SetEase(KTweenType.easeOutQuad);
+        item.SetEase(KTweenType.outQuad);
 
         // 延迟期间不应变化
         yield return new WaitForSeconds(0.2f);

@@ -1,5 +1,6 @@
 ﻿
 #include "KTweenHead.h"
+#include "KTween.h"
 
 #ifdef USE_LinkedList
 namespace KTweenAPI
@@ -59,7 +60,8 @@ namespace KTweenAPI
 
                 if (mItem->updateFunc.IsSet())
                 {
-                    mItem->updateFunc(fTimePercent);
+                    float EasedPct = KTween::EaseFunc::ApplyEase(mItem->nEaseType, fTimePercent);
+                    mItem->updateFunc(EasedPct);
                 }
 
                 if (mItem->nLoopPingTong == 2)
@@ -110,7 +112,8 @@ namespace KTweenAPI
 
                 if (mItem->updateFunc.IsSet())
                 {
-                    mItem->updateFunc(fTimePercent);
+                    float EasedPct = KTween::EaseFunc::ApplyEase(mItem->nEaseType, fTimePercent);
+                    mItem->updateFunc(EasedPct);
                 }
 
                 if (fTimePercent >= 1.0f)

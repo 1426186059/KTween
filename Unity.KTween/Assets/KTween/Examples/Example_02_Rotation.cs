@@ -23,7 +23,7 @@ public class Example_02_Rotation : MonoBehaviour
 
         KTween.AddTween(gameObject, duration, (t) =>
         {
-            transform.eulerAngles = KTweenFunc.easeLinear(from, to, t);
+            transform.eulerAngles = KTweenFunc.linear(from, to, t);
         });
     }
 }

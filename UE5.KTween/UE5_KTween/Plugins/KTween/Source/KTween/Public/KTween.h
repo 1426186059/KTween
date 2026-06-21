@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "KTweenHead.h"
 #include "CoreMinimal.h"
@@ -8,16 +8,7 @@ using namespace KTweenAPI;
 class KTween
 {
 public:
-    enum EaseType
-    {
-        linear, easeOutQuad, easeInQuad, easeInOutQuad, easeInCubic, easeOutCubic,
-        easeInOutCubic, easeInQuart, easeOutQuart, easeInOutQuart,
-        easeInQuint, easeOutQuint, easeInOutQuint, easeInSine, easeOutSine, easeInOutSine,
-        easeInExpo, easeOutExpo, easeInOutExpo, easeInCirc, easeOutCirc, easeInOutCirc,
-        easeInBounce, easeOutBounce, easeInOutBounce, easeInBack, easeOutBack, easeInOutBack,
-        easeInElastic, easeOutElastic, easeInOutElastic,
-        easeSpring, easeShake, punch, once, clamp, pingPong, animationCurve
-    };
+    using EaseType = KTweenAPI::EaseType;
 
     struct Handle
     {
@@ -102,8 +93,8 @@ public:
                 case EaseType::easeInElastic: return ElasticIn(fPercent);
                 case EaseType::easeOutElastic:return ElasticOut(fPercent);
                 case EaseType::easeInOutElastic: return ElasticInOut(fPercent);
-                case EaseType::easeSpring:    return Spring(fPercent);
-                case EaseType::easeShake:     return Shake(fPercent);
+                case EaseType::easeSpring:    return easeSpring(fPercent);
+                case EaseType::easeShake:     return easeShake(fPercent);
                 case EaseType::punch:         return Punch(fPercent);
                 default: return fPercent;
             }
@@ -116,42 +107,6 @@ public:
             float t = ApplyEase(type, fPercent);
             return from * (1.0f - t) + to * t;
         }
-
-        // ── 命名便利方法（兼容旧代码） ──
-        template<typename T> static T easeLinear(T from, T to, float t)       { return Apply(from, to, t, EaseType::linear); }
-        template<typename T> static T easeInQuad(T from, T to, float t)       { return Apply(from, to, t, EaseType::easeInQuad); }
-        template<typename T> static T easeOutQuad(T from, T to, float t)      { return Apply(from, to, t, EaseType::easeOutQuad); }
-        template<typename T> static T easeInOutQuad(T from, T to, float t)    { return Apply(from, to, t, EaseType::easeInOutQuad); }
-        template<typename T> static T easeInCubic(T from, T to, float t)      { return Apply(from, to, t, EaseType::easeInCubic); }
-        template<typename T> static T easeOutCubic(T from, T to, float t)     { return Apply(from, to, t, EaseType::easeOutCubic); }
-        template<typename T> static T easeInOutCubic(T from, T to, float t)   { return Apply(from, to, t, EaseType::easeInOutCubic); }
-        template<typename T> static T easeInQuart(T from, T to, float t)      { return Apply(from, to, t, EaseType::easeInQuart); }
-        template<typename T> static T easeOutQuart(T from, T to, float t)     { return Apply(from, to, t, EaseType::easeOutQuart); }
-        template<typename T> static T easeInOutQuart(T from, T to, float t)   { return Apply(from, to, t, EaseType::easeInOutQuart); }
-        template<typename T> static T easeInQuint(T from, T to, float t)      { return Apply(from, to, t, EaseType::easeInQuint); }
-        template<typename T> static T easeOutQuint(T from, T to, float t)     { return Apply(from, to, t, EaseType::easeOutQuint); }
-        template<typename T> static T easeInOutQuint(T from, T to, float t)   { return Apply(from, to, t, EaseType::easeInOutQuint); }
-        template<typename T> static T easeInSine(T from, T to, float t)       { return Apply(from, to, t, EaseType::easeInSine); }
-        template<typename T> static T easeOutSine(T from, T to, float t)      { return Apply(from, to, t, EaseType::easeOutSine); }
-        template<typename T> static T easeInOutSine(T from, T to, float t)    { return Apply(from, to, t, EaseType::easeInOutSine); }
-        template<typename T> static T easeInExpo(T from, T to, float t)       { return Apply(from, to, t, EaseType::easeInExpo); }
-        template<typename T> static T easeOutExpo(T from, T to, float t)      { return Apply(from, to, t, EaseType::easeOutExpo); }
-        template<typename T> static T easeInOutExpo(T from, T to, float t)    { return Apply(from, to, t, EaseType::easeInOutExpo); }
-        template<typename T> static T easeInCirc(T from, T to, float t)       { return Apply(from, to, t, EaseType::easeInCirc); }
-        template<typename T> static T easeOutCirc(T from, T to, float t)      { return Apply(from, to, t, EaseType::easeOutCirc); }
-        template<typename T> static T easeInOutCirc(T from, T to, float t)    { return Apply(from, to, t, EaseType::easeInOutCirc); }
-        template<typename T> static T easeInBounce(T from, T to, float t)     { return Apply(from, to, t, EaseType::easeInBounce); }
-        template<typename T> static T easeOutBounce(T from, T to, float t)    { return Apply(from, to, t, EaseType::easeOutBounce); }
-        template<typename T> static T easeInOutBounce(T from, T to, float t)  { return Apply(from, to, t, EaseType::easeInOutBounce); }
-        template<typename T> static T easeInBack(T from, T to, float t)       { return Apply(from, to, t, EaseType::easeInBack); }
-        template<typename T> static T easeOutBack(T from, T to, float t)      { return Apply(from, to, t, EaseType::easeOutBack); }
-        template<typename T> static T easeInOutBack(T from, T to, float t)    { return Apply(from, to, t, EaseType::easeInOutBack); }
-        template<typename T> static T easeInElastic(T from, T to, float t)    { return Apply(from, to, t, EaseType::easeInElastic); }
-        template<typename T> static T easeOutElastic(T from, T to, float t)   { return Apply(from, to, t, EaseType::easeOutElastic); }
-        template<typename T> static T easeInOutElastic(T from, T to, float t) { return Apply(from, to, t, EaseType::easeInOutElastic); }
-        template<typename T> static T easeSpring(T from, T to, float t)       { return Apply(from, to, t, EaseType::easeSpring); }
-        template<typename T> static T easeShake(T from, T to, float t)        { return Apply(from, to, t, EaseType::easeShake); }
-        template<typename T> static T punch(T from, T to, float t)            { return Apply(from, to, t, EaseType::punch); }
 
     private:
         EaseFunc() = delete;
@@ -204,8 +159,8 @@ public:
         static float ElasticOut(float f)   { if (f <= 0 || f >= 1) return f; float c4 = 2.0943951f; return FMath::Pow(2.0f, -10.0f*f) * FMath::Sin((f*10.0f-0.75f)*c4) + 1.0f; }
         static float ElasticInOut(float f) { if (f <= 0 || f >= 1) return f; float c5 = 1.3962634f; return f < 0.5f ? -(FMath::Pow(2.0f,20.0f*f-10.0f)*FMath::Sin((20.0f*f-11.125f)*c5))*0.5f : FMath::Pow(2.0f,-20.0f*f+10.0f)*FMath::Sin((20.0f*f-11.125f)*c5)*0.5f+1.0f; }
 
-        static float Spring(float f) { f = FMath::Clamp(f, 0.0f, 1.0f); return FMath::Pow(2.0f, -10.0f*f) * FMath::Sin((f - 0.075f) * UE_PI * 2.0f / 0.3f) + 1.0f; }
-        static float Shake(float f)  { return FMath::Pow(2.0f, -10.0f * f) * FMath::Sin(f * 7.0f * UE_PI); }
+        static float easeSpring(float f) { f = FMath::Clamp(f, 0.0f, 1.0f); return FMath::Pow(2.0f, -10.0f*f) * FMath::Sin((f - 0.075f) * UE_PI * 2.0f / 0.3f) + 1.0f; }
+        static float easeShake(float f)  { return FMath::Pow(2.0f, -10.0f * f) * FMath::Sin(f * 7.0f * UE_PI); }
         static float Punch(float f)  { if (f == 0 || f == 1) return 0; return FMath::Pow(2.0f, -10.0f*f) * FMath::Sin(f * 9.0f * UE_PI); }
     };
 

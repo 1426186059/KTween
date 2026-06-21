@@ -6,7 +6,7 @@ public class KTweenTest : MonoBehaviour
     {
         var mTweenItem1 = KTween.AddTween(gameObject, 10.0f, (fTimePercent) =>
         {
-            gameObject.transform.localPosition = KTweenFunc.easeLinear(Vector3.zero, Vector3.one * 10, fTimePercent);
+            gameObject.transform.localPosition = KTweenFunc.linear(Vector3.zero, Vector3.one * 10, fTimePercent);
         }).GetHandle();
     }
 }
