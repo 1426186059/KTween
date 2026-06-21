@@ -10,55 +10,55 @@
 class KTweenFunc
 {
 public:
-    using EaseType = KTweenAPI::EaseType;
+    using KTweenType = KTweenAPI::KTweenType;
 
     /// 核心方法：输入 0~1 的百分比，返回缓动后的百分比
-    static float ApplyEase(EaseType type, float fPercent)
+    static float ApplyEase(KTweenType type, float fPercent)
     {
         fPercent = FMath::Clamp(fPercent, 0.0f, 1.0f);
         switch (type)
         {
-            case EaseType::linear:        return fPercent;
-            case EaseType::easeInQuad:    return QuadIn(fPercent);
-            case EaseType::easeOutQuad:   return QuadOut(fPercent);
-            case EaseType::easeInOutQuad: return QuadInOut(fPercent);
-            case EaseType::easeInCubic:   return CubicIn(fPercent);
-            case EaseType::easeOutCubic:  return CubicOut(fPercent);
-            case EaseType::easeInOutCubic:return CubicInOut(fPercent);
-            case EaseType::easeInQuart:   return QuartIn(fPercent);
-            case EaseType::easeOutQuart:  return QuartOut(fPercent);
-            case EaseType::easeInOutQuart:return QuartInOut(fPercent);
-            case EaseType::easeInQuint:   return QuintIn(fPercent);
-            case EaseType::easeOutQuint:  return QuintOut(fPercent);
-            case EaseType::easeInOutQuint:return QuintInOut(fPercent);
-            case EaseType::easeInSine:    return SineIn(fPercent);
-            case EaseType::easeOutSine:   return SineOut(fPercent);
-            case EaseType::easeInOutSine: return SineInOut(fPercent);
-            case EaseType::easeInExpo:    return ExpoIn(fPercent);
-            case EaseType::easeOutExpo:   return ExpoOut(fPercent);
-            case EaseType::easeInOutExpo: return ExpoInOut(fPercent);
-            case EaseType::easeInCirc:    return CircIn(fPercent);
-            case EaseType::easeOutCirc:   return CircOut(fPercent);
-            case EaseType::easeInOutCirc: return CircInOut(fPercent);
-            case EaseType::easeInBounce:  return 1.0f - BounceOut(1.0f - fPercent);
-            case EaseType::easeOutBounce: return BounceOut(fPercent);
-            case EaseType::easeInOutBounce: return fPercent < 0.5f ? (1.0f - BounceOut(1.0f - 2.0f*fPercent))*0.5f : (1.0f + BounceOut(2.0f*fPercent - 1.0f))*0.5f;
-            case EaseType::easeInBack:   return BackIn(fPercent);
-            case EaseType::easeOutBack:  return BackOut(fPercent);
-            case EaseType::easeInOutBack:return BackInOut(fPercent);
-            case EaseType::easeInElastic: return ElasticIn(fPercent);
-            case EaseType::easeOutElastic:return ElasticOut(fPercent);
-            case EaseType::easeInOutElastic: return ElasticInOut(fPercent);
-            case EaseType::easeSpring:    return easeSpring(fPercent);
-            case EaseType::easeShake:     return easeShake(fPercent);
-            case EaseType::punch:         return Punch(fPercent);
+            case KTweenType::linear:        return fPercent;
+            case KTweenType::easeInQuad:    return QuadIn(fPercent);
+            case KTweenType::easeOutQuad:   return QuadOut(fPercent);
+            case KTweenType::easeInOutQuad: return QuadInOut(fPercent);
+            case KTweenType::easeInCubic:   return CubicIn(fPercent);
+            case KTweenType::easeOutCubic:  return CubicOut(fPercent);
+            case KTweenType::easeInOutCubic:return CubicInOut(fPercent);
+            case KTweenType::easeInQuart:   return QuartIn(fPercent);
+            case KTweenType::easeOutQuart:  return QuartOut(fPercent);
+            case KTweenType::easeInOutQuart:return QuartInOut(fPercent);
+            case KTweenType::easeInQuint:   return QuintIn(fPercent);
+            case KTweenType::easeOutQuint:  return QuintOut(fPercent);
+            case KTweenType::easeInOutQuint:return QuintInOut(fPercent);
+            case KTweenType::easeInSine:    return SineIn(fPercent);
+            case KTweenType::easeOutSine:   return SineOut(fPercent);
+            case KTweenType::easeInOutSine: return SineInOut(fPercent);
+            case KTweenType::easeInExpo:    return ExpoIn(fPercent);
+            case KTweenType::easeOutExpo:   return ExpoOut(fPercent);
+            case KTweenType::easeInOutExpo: return ExpoInOut(fPercent);
+            case KTweenType::easeInCirc:    return CircIn(fPercent);
+            case KTweenType::easeOutCirc:   return CircOut(fPercent);
+            case KTweenType::easeInOutCirc: return CircInOut(fPercent);
+            case KTweenType::easeInBounce:  return 1.0f - BounceOut(1.0f - fPercent);
+            case KTweenType::easeOutBounce: return BounceOut(fPercent);
+            case KTweenType::easeInOutBounce: return fPercent < 0.5f ? (1.0f - BounceOut(1.0f - 2.0f*fPercent))*0.5f : (1.0f + BounceOut(2.0f*fPercent - 1.0f))*0.5f;
+            case KTweenType::easeInBack:   return BackIn(fPercent);
+            case KTweenType::easeOutBack:  return BackOut(fPercent);
+            case KTweenType::easeInOutBack:return BackInOut(fPercent);
+            case KTweenType::easeInElastic: return ElasticIn(fPercent);
+            case KTweenType::easeOutElastic:return ElasticOut(fPercent);
+            case KTweenType::easeInOutElastic: return ElasticInOut(fPercent);
+            case KTweenType::easeSpring:    return easeSpring(fPercent);
+            case KTweenType::easeShake:     return easeShake(fPercent);
+            case KTweenType::punch:         return Punch(fPercent);
             default: return fPercent;
         }
     }
 
     // ── 模板便利方法：自动 Lerp + ApplyEase ──
     template<typename T>
-    static T Apply(T from, T to, float fPercent, EaseType type)
+    static T Apply(T from, T to, float fPercent, KTweenType type)
     {
         float t = ApplyEase(type, fPercent);
         return from * (1.0f - t) + to * t;

@@ -14,7 +14,7 @@ namespace KTweenAPI
     typedef TFunction<void(void)> ActionDelegate;
     typedef TFunction<void(float)> Action_Float_Delegate;
 
-    enum EaseType
+    enum KTweenType
     {
         linear, easeOutQuad, easeInQuad, easeInOutQuad, easeInCubic, easeOutCubic, easeInOutCubic,
         easeInQuart, easeOutQuart, easeInOutQuart,
@@ -40,7 +40,7 @@ namespace KTweenAPI
         int32 nLoopCount;
         int32 nLoopPingTong;
         uint32 nVersion;
-        EaseType nEaseType;
+        KTweenType nEaseType;
         Action_Float_Delegate updateFunc;
         ActionDelegate finishFunc;
         ActionDelegate startFunc;
@@ -155,9 +155,9 @@ namespace KTweenAPI
             return GetTSharedPtr();
         }
 
-        TSharedPtr<KTweenItem> SetEase(EaseType EaseType)
+        TSharedPtr<KTweenItem> SetEase(KTweenType KTweenType)
         {
-            this->nEaseType = EaseType;
+            this->nEaseType = KTweenType;
             return GetTSharedPtr();
         }
 
@@ -259,6 +259,7 @@ namespace KTweenAPI
 
 };
 
+using KTweenType = KTweenAPI::KTweenType;
 
 UCLASS()
 class KTWEEN_API AKTweenMgr : public AActor

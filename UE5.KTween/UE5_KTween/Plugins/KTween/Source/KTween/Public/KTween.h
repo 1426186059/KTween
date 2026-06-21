@@ -9,7 +9,7 @@ using namespace KTweenAPI;
 class KTween
 {
 public:
-    using EaseType = KTweenAPI::EaseType;
+    using KTweenType = KTweenAPI::KTweenType;
     using EaseFunc = KTweenFunc;
 
     struct Handle
@@ -123,7 +123,7 @@ public:
 
     /// 获取缓动函数（兼容旧代码）
     template<typename T>
-    static TFunction<T(T, T, float)> GetEaseFunc(EaseType nType)
+    static TFunction<T(T, T, float)> GetEaseFunc(KTweenType nType)
     {
         return [nType](T from, T to, float t) -> T
         {
