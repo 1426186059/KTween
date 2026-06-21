@@ -253,6 +253,8 @@ namespace KTweenAPI
         TDoubleLinkedList<TSharedPtr<KTweenItem>>::TDoubleLinkedListNode* DoRemove(
             TSharedPtr<KTweenItem> mItem);
 
+        void ClearAll();
+
     };
 
 };
@@ -273,15 +275,9 @@ public:
 public:
     static AKTweenMgr* GetSingleton(bool bCreate = true)
     {
-        static AKTweenMgr* Instance = nullptr;
+        static TWeakObjectPtr<AKTweenMgr> Instance;
 
-        // 如果 Instance 是野指针（PIE 结束后 Actor 被销毁），重置
-        if (Instance != nullptr && !IsValid(Instance))
-        {
-            Instance = nullptr;
-        }
-
-        if (Instance == nullptr && bCreate)
+        if (!Instance.IsValid() && bCreate)
         {
             UWorld* World = nullptr;
             if (GEngine)
@@ -297,10 +293,10 @@ public:
                 FActorSpawnParameters SpawnParams;
                 SpawnParams.Name = TEXT("KTween~");
                 SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-                Instance = Cast<AKTweenMgr>(World->SpawnActor(AKTweenMgr::StaticClass(), &FVector::ZeroVector, &FRotator::ZeroRotator, SpawnParams));
+                Instance = World->SpawnActor<AKTweenMgr>(FVector::ZeroVector, FRotator::ZeroRotator, SpawnParams);
             }
         }
-        return Instance;
+        return Instance.Get();
     }
 
 private:

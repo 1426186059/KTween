@@ -208,4 +208,15 @@ namespace KTweenAPI
             mNode = mNode->GetNextNode();
         }
     }
+
+    void KTweenByLinkedList::ClearAll()
+    {
+        while (auto* mNode = mTweenT.GetHead())
+        {
+            TSharedPtr<KTweenItem> mItem = mNode->GetValue();
+            mItem->mNodeEntry = nullptr; // 防止 ~KTweenItem 中的 double-free
+            mItem->toggle = false;
+            mTweenT.RemoveNode(mNode); // 默认删除节点，但 mNodeEntry 已置空
+        }
+    }
 }
