@@ -305,6 +305,13 @@ public:
     static AKTweenMgr* GetSingleton(bool bCreate = true)
     {
         static AKTweenMgr* Instance = nullptr;
+
+        // 如果 Instance 是野指针（PIE 结束后 Actor 被销毁），重置
+        if (Instance != nullptr && !IsValid(Instance))
+        {
+            Instance = nullptr;
+        }
+
         if (Instance == nullptr && bCreate)
         {
             UWorld* World = nullptr;
