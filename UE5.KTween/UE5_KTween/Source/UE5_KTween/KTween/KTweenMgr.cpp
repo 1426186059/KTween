@@ -27,7 +27,10 @@ void AKTweenMgr::BeginPlay()
 
 void AKTweenMgr::EndPlay(EEndPlayReason::Type Reason)
 {
-    if (mManager) { delete mManager; mManager = nullptr; }
+    // mManager is a raw C++ heap object with shared_ptr cycles
+    // between TDoubleLinkedList nodes and KTweenItem.
+    // Let the process clean-up handle it to avoid double-free.
+    mManager = nullptr;
     Super::EndPlay(Reason);
 }
 

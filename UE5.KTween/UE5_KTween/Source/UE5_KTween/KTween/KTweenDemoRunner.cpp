@@ -51,6 +51,7 @@ AActor* AKTweenDemoRunner::SpawnShape(FVector Location, FColor Color, int32 Shap
     Actor->SetActorScale3D(FVector(Scale));
     UStaticMeshComponent* MeshComp = Actor->GetStaticMeshComponent();
     MeshComp->SetStaticMesh(Mesh);
+    MeshComp->SetMobility(EComponentMobility::Movable);
 
     UMaterialInstanceDynamic* Mat = MeshComp->CreateAndSetMaterialInstanceDynamic(0);
     if (Mat)
@@ -376,34 +377,34 @@ void AKTweenDemoRunner::RunAllDemos()
     ClearAllSpawned();
 
     // 1. Basic Move (2x5 = 10)
-    Demo_BasicMove(SpawnGridBatch(2, 5, 120, FVector(-1200, -800, 0)));
+    Demo_BasicMove(SpawnGridBatch(2, 5, 130, FVector(-800, -600, 0)));
 
     // 2. Scale Pulse (3x4 = 12)
-    Demo_ScalePulse(SpawnGridBatch(3, 4, 120, FVector(-600, -800, 0)));
+    Demo_ScalePulse(SpawnGridBatch(3, 4, 130, FVector(-300, -600, 0)));
 
     // 3. Rotation (2x5 = 10)
-    Demo_Rotation(SpawnGridBatch(2, 5, 120, FVector(0, -800, 0)));
+    Demo_Rotation(SpawnGridBatch(2, 5, 130, FVector(200, -600, 0)));
 
     // 4. Delay & Chain (1x6 = 6)
-    Demo_DelayAndChain(SpawnGridBatch(1, 6, 130, FVector(600, -800, 0)));
+    Demo_DelayAndChain(SpawnGridBatch(1, 6, 140, FVector(700, -600, 0)));
 
     // 5. Loop (2x5 = 10)
-    Demo_Loop(SpawnGridBatch(2, 5, 120, FVector(1200, -800, 0)));
+    Demo_Loop(SpawnGridBatch(2, 5, 130, FVector(1200, -600, 0)));
 
     // 6. PingPong (2x4 = 8)
-    Demo_PingPong(SpawnGridBatch(2, 4, 140, FVector(-1000, 0, 0)));
+    Demo_PingPong(SpawnGridBatch(2, 4, 150, FVector(-600, 0, 0)));
 
     // 7. Ease Comparison (1x10 = 10)
-    Demo_EaseComparison(SpawnGridBatch(1, 10, 100, FVector(-500, 0, 0)));
+    Demo_EaseComparison(SpawnGridBatch(1, 10, 110, FVector(-400, 0, 0)));
 
     // 8. Combined (3x4 = 12)
-    Demo_MultiTweenCombined(SpawnGridBatch(3, 4, 140, FVector(0, 0, 0)));
+    Demo_MultiTweenCombined(SpawnGridBatch(3, 4, 150, FVector(200, 0, 0)));
 
     // 9. Cancel & Handle (2x3 = 6)
-    Demo_CancelHandle(SpawnGridBatch(2, 3, 130, FVector(700, 0, 0)));
+    Demo_CancelHandle(SpawnGridBatch(2, 3, 140, FVector(800, 0, 0)));
 
     // 10. 100+ Objects Wave (10x15 = 150)
-    Demo_100Objects(SpawnGridBatch(10, 15, 90, FVector(0, 800, 0)));
+    Demo_100Objects(SpawnGridBatch(10, 15, 100, FVector(200, 700, 0)));
 
     UE_LOG(LogTemp, Warning, TEXT("KTween Demo: Spawned %d objects across 10 demos! Play in editor to see animations."),
            mSpawnedActors.Num());
