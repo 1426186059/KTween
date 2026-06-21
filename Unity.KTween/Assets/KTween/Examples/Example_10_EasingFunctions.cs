@@ -45,7 +45,7 @@ public class Example_10_EasingFunctions : MonoBehaviour
         var tween = KTween.AddTween(gameObject, duration, (t) =>
         {
             float eased = ApplyEasing(t);
-            float x = KTweenFunc.linear(0f, moveDistance, eased);
+            float x = KTweenFunc.easeLinear(0f, moveDistance, eased);
             transform.position = m_StartPos + new Vector3(x, 0f, 0f);
         });
 

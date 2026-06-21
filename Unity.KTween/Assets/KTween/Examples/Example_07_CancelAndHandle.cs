@@ -4,7 +4,7 @@ using UnityEngine;
 /// 示例脚本 07 - Cancel 与 Handle 使用
 /// 演示：
 ///   - cancel() 停止 Tween
-///   - TweenItemHandle 安全句柄的使用
+///   - Handle 安全句柄的使用
 ///   - IsValid() 检查句柄状态
 ///   - IDisposable 释放模式
 /// </summary>
@@ -14,7 +14,7 @@ public class Example_07_CancelAndHandle : MonoBehaviour
     public float duration = 3.0f;
     public bool autoPlay = true;
 
-    private KTween.TweenItemHandle m_Handle;
+    private KTween.Handle m_Handle;
     private bool m_IsCancelled = false;
 
     private void Start()
@@ -32,7 +32,7 @@ public class Example_07_CancelAndHandle : MonoBehaviour
         {
             if (!m_IsCancelled)
             {
-                transform.position = KTweenFunc.linear(from, from + Vector3.right * 5f, t);
+                transform.position = KTweenFunc.easeLinear(from, from + Vector3.right * 5f, t);
             }
         });
 

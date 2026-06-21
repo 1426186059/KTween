@@ -32,7 +32,7 @@ public class Example_13_PathMovement : MonoBehaviour
 
             var seg = KTween.AddTween(gameObject, moveDurationPerSegment, (t) =>
             {
-                transform.position = KTweenFunc.linear(from, to, t);
+                transform.position = KTweenFunc.easeLinear(from, to, t);
             });
 
             if (last != null) last.AppendTween(seg);
@@ -47,7 +47,7 @@ public class Example_13_PathMovement : MonoBehaviour
 
             var back = KTween.AddTween(gameObject, moveDurationPerSegment, (t) =>
             {
-                transform.position = KTweenFunc.linear(lastPos, firstPos, t);
+                transform.position = KTweenFunc.easeLinear(lastPos, firstPos, t);
             });
 
             last.AppendTween(back);

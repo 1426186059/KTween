@@ -18,7 +18,7 @@ public class Example_AllInOne : MonoBehaviour
 
         KTween.AddTween(gameObject, 2.0f, (t) =>
         {
-            transform.position = KTweenFunc.linear(from, to, t);
+            transform.position = KTweenFunc.easeLinear(from, to, t);
         }).GetHandle();
     }
 
@@ -33,7 +33,7 @@ public class Example_AllInOne : MonoBehaviour
 
         KTween.AddTween(gameObject, 2.0f, (t) =>
         {
-            transform.eulerAngles = KTweenFunc.linear(from, to, t);
+            transform.eulerAngles = KTweenFunc.easeLinear(from, to, t);
         });
     }
 
@@ -48,7 +48,7 @@ public class Example_AllInOne : MonoBehaviour
 
         KTween.AddTween(gameObject, 1.0f, (t) =>
         {
-            transform.localScale = KTweenFunc.linear(from, to, t);
+            transform.localScale = KTweenFunc.easeLinear(from, to, t);
         });
     }
 
@@ -63,7 +63,7 @@ public class Example_AllInOne : MonoBehaviour
 
         KTween.AddTween(gameObject, 1.0f, (t) =>
         {
-            transform.position = KTweenFunc.linear(from, to, t);
+            transform.position = KTweenFunc.easeLinear(from, to, t);
         }).SetDelay(2.0f);
     }
 
@@ -78,7 +78,7 @@ public class Example_AllInOne : MonoBehaviour
 
         KTween.AddTween(gameObject, 1.0f, (t) =>
         {
-            transform.position = KTweenFunc.linear(from, to, t);
+            transform.position = KTweenFunc.easeLinear(from, to, t);
         }).SetLoop(-1);
     }
 
@@ -93,7 +93,7 @@ public class Example_AllInOne : MonoBehaviour
 
         KTween.AddTween(gameObject, 0.5f, (t) =>
         {
-            transform.position = KTweenFunc.linear(from, to, t);
+            transform.position = KTweenFunc.easeLinear(from, to, t);
         }).SetLoop(5);
     }
 
@@ -108,7 +108,7 @@ public class Example_AllInOne : MonoBehaviour
 
         KTween.AddTween(gameObject, 1.0f, (t) =>
         {
-            transform.position = KTweenFunc.linear(from, to, t);
+            transform.position = KTweenFunc.easeLinear(from, to, t);
         }).SetLoopPingPong(-1);
     }
 
@@ -123,7 +123,7 @@ public class Example_AllInOne : MonoBehaviour
 
         KTween.AddTween(gameObject, 0.5f, (t) =>
         {
-            transform.position = KTweenFunc.linear(from, to, t);
+            transform.position = KTweenFunc.easeLinear(from, to, t);
         }).SetLoopPingPong(3);
     }
 
@@ -139,13 +139,13 @@ public class Example_AllInOne : MonoBehaviour
         Vector3 p3 = p2 + Vector3.left * 2f;
 
         var t1 = KTween.AddTween(gameObject, 1.0f, (t) =>
-            transform.position = KTweenFunc.linear(p0, p1, t));
+            transform.position = KTweenFunc.easeLinear(p0, p1, t));
 
         var t2 = KTween.AddTween(gameObject, 1.0f, (t) =>
-            transform.position = KTweenFunc.linear(p1, p2, t));
+            transform.position = KTweenFunc.easeLinear(p1, p2, t));
 
         var t3 = KTween.AddTween(gameObject, 1.0f, (t) =>
-            transform.position = KTweenFunc.linear(p2, p3, t));
+            transform.position = KTweenFunc.easeLinear(p2, p3, t));
 
         t1.AppendTween(t2);
         t2.AppendTween(t3);
@@ -179,7 +179,7 @@ public class Example_AllInOne : MonoBehaviour
         Vector3 from = transform.position;
         var item = KTween.AddTween(gameObject, 10.0f, (t) =>
         {
-            transform.position = KTweenFunc.linear(from, from + Vector3.right * 10f, t);
+            transform.position = KTweenFunc.easeLinear(from, from + Vector3.right * 10f, t);
         });
 
         // 1 秒后取消
@@ -298,9 +298,9 @@ public class Example_AllInOne : MonoBehaviour
 
         KTween.AddTween(gameObject, 2.0f, (t) =>
         {
-            transform.position = KTweenFunc.linear(startPos, endPos, t);
-            transform.localScale = KTweenFunc.linear(startScale, endScale, t);
-            transform.eulerAngles = KTweenFunc.linear(Vector3.zero, new Vector3(0f, 0f, 360f * 2f), t);
+            transform.position = KTweenFunc.easeLinear(startPos, endPos, t);
+            transform.localScale = KTweenFunc.easeLinear(startScale, endScale, t);
+            transform.eulerAngles = KTweenFunc.easeLinear(Vector3.zero, new Vector3(0f, 0f, 360f * 2f), t);
         }).SetLoopPingPong(-1);
     }
 
@@ -317,7 +317,7 @@ public class Example_AllInOne : MonoBehaviour
         {
             // 弹性缓动曲线
             float eased = EaseOutBack(t);
-            transform.position = KTweenFunc.linear(from, to, eased);
+            transform.position = KTweenFunc.easeLinear(from, to, eased);
         });
     }
 
@@ -361,7 +361,7 @@ public class Example_AllInOne : MonoBehaviour
     // ============================================================
     // 20. 清除所有 Tween（通过句柄批量取消）
     // ============================================================
-    private readonly List<KTween.TweenItemHandle> m_AllHandles = new List<KTween.TweenItemHandle>();
+    private readonly List<KTween.Handle> m_AllHandles = new List<KTween.Handle>();
 
     [ContextMenu("20 - 批量取消所有 Tween")]
     public void Demo_CancelAllTweens()
@@ -378,7 +378,7 @@ public class Example_AllInOne : MonoBehaviour
     /// <summary>
     /// 包装方法：自动记录句柄以便批量取消
     /// </summary>
-    public KTween.TweenItemHandle TrackedTween(KTween.TweenItem item)
+    public KTween.Handle TrackedTween(KTween.TweenItem item)
     {
         var handle = item.GetHandle();
         m_AllHandles.Add(handle);

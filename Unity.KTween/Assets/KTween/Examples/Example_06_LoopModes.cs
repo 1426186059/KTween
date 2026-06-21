@@ -38,7 +38,7 @@ public class Example_06_LoopModes : MonoBehaviour
 
         var tween = KTween.AddTween(gameObject, duration, (t) =>
         {
-            float x = KTweenFunc.linear(0f, moveDistance, t);
+            float x = KTweenFunc.easeLinear(0f, moveDistance, t);
             transform.position = m_StartPos + new Vector3(x, 0f, 0f);
         });
 

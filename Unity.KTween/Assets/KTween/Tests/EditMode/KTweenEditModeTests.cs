@@ -456,9 +456,9 @@ public class KTweenEditModeTests
     {
         Vector3 from = Vector3.zero;
         Vector3 to = Vector3.one * 10f;
-        Assert.AreEqual(Vector3.zero, KTweenFunc.linear(from, to, 0f));
-        Assert.AreEqual(Vector3.one * 5f, KTweenFunc.linear(from, to, 0.5f));
-        Assert.AreEqual(Vector3.one * 10f, KTweenFunc.linear(from, to, 1f));
+        Assert.AreEqual(Vector3.zero, KTweenFunc.easeLinear(from, to, 0f));
+        Assert.AreEqual(Vector3.one * 5f, KTweenFunc.easeLinear(from, to, 0.5f));
+        Assert.AreEqual(Vector3.one * 10f, KTweenFunc.easeLinear(from, to, 1f));
     }
 
     [Test]
@@ -466,26 +466,26 @@ public class KTweenEditModeTests
     {
         Vector2 from = Vector2.zero;
         Vector2 to = new Vector2(100f, 200f);
-        Assert.AreEqual(Vector2.zero, KTweenFunc.linear(from, to, 0f));
-        Assert.AreEqual(new Vector2(50f, 100f), KTweenFunc.linear(from, to, 0.5f));
-        Assert.AreEqual(to, KTweenFunc.linear(from, to, 1f));
+        Assert.AreEqual(Vector2.zero, KTweenFunc.easeLinear(from, to, 0f));
+        Assert.AreEqual(new Vector2(50f, 100f), KTweenFunc.easeLinear(from, to, 0.5f));
+        Assert.AreEqual(to, KTweenFunc.easeLinear(from, to, 1f));
     }
 
     [Test]
     public void EaseLinear_Float_ReturnsCorrectValue()
     {
-        Assert.AreEqual(0f, KTweenFunc.linear(0f, 100f, 0f));
-        Assert.AreEqual(50f, KTweenFunc.linear(0f, 100f, 0.5f));
-        Assert.AreEqual(100f, KTweenFunc.linear(0f, 100f, 1f));
+        Assert.AreEqual(0f, KTweenFunc.easeLinear(0f, 100f, 0f));
+        Assert.AreEqual(50f, KTweenFunc.easeLinear(0f, 100f, 0.5f));
+        Assert.AreEqual(100f, KTweenFunc.easeLinear(0f, 100f, 1f));
     }
 
     [Test]
     public void EaseLinear_ClampsOutOfRange()
     {
         // 不保证 Clamp，但至少不应该抛出异常
-        Assert.DoesNotThrow(() => KTweenFunc.linear(Vector3.zero, Vector3.one, -0.5f));
-        Assert.DoesNotThrow(() => KTweenFunc.linear(Vector3.zero, Vector3.one, 1.5f));
-        Assert.DoesNotThrow(() => KTweenFunc.linear(0f, 1f, -0.5f));
-        Assert.DoesNotThrow(() => KTweenFunc.linear(0f, 1f, 1.5f));
+        Assert.DoesNotThrow(() => KTweenFunc.easeLinear(Vector3.zero, Vector3.one, -0.5f));
+        Assert.DoesNotThrow(() => KTweenFunc.easeLinear(Vector3.zero, Vector3.one, 1.5f));
+        Assert.DoesNotThrow(() => KTweenFunc.easeLinear(0f, 1f, -0.5f));
+        Assert.DoesNotThrow(() => KTweenFunc.easeLinear(0f, 1f, 1.5f));
     }
 }

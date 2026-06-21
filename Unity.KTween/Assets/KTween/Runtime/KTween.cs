@@ -11,9 +11,9 @@ public static partial class KTween
         KTweenMgr.Instance.SetMaxTweenCount(nCount);
     }
 
-    public static TweenItemHandle GetHandle(TweenItem mTSharePtr)
+    public static Handle GetHandle(TweenItem mTSharePtr)
     {
-        return new TweenItemHandle(mTSharePtr);
+        return new Handle(mTSharePtr);
     }
 
     public static TweenItem AddTween(float time, Action<float> updateFunc = null, Action finishFunc = null)
@@ -46,17 +46,17 @@ public static partial class KTween
         KTweenMgr.Instance.Cancel(obj);
     }
 
-    public static void Cancel(TweenItemHandle handle)
+    public static void Cancel(Handle handle)
     {
         handle.Cancel();
     }
 
-    public struct TweenItemHandle : IDisposable
+    public struct Handle : IDisposable
     {
         private uint nVersion;
         private TweenItem mInnerPtr;
 
-        public TweenItemHandle(TweenItem mItem)
+        public Handle(TweenItem mItem)
         {
             this.mInnerPtr =  mItem;
             this.nVersion = mItem.nVersion;
@@ -67,11 +67,16 @@ public static partial class KTween
             return mInnerPtr != null && mInnerPtr.nVersion == nVersion;
         }
 
-        public void AppendTween(TweenItemHandle mOtherTween)
+        public void AppendTween(Handle mOtherTween)
         {
             if (IsValid() && mOtherTween.IsValid())
             {
                 mInnerPtr.AppendTween(mOtherTween.mInnerPtr);
+            }
+            else
+            {
+                this.mInnerPtr = mOtherTween.mInnerPtr;
+                this.nVersion = mOtherTween.mInnerPtr.nVersion;
             }
         }
 
@@ -194,9 +199,9 @@ public static partial class KTween
             nType = KTweenType.linear;
         }
 
-        public TweenItemHandle GetHandle()
+        public Handle GetHandle()
         {
-            return new TweenItemHandle(this);
+            return new Handle(this);
         }
 
         public TweenItem cancel()

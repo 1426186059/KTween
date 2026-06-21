@@ -26,7 +26,7 @@ public class Example_01_BasicMove : MonoBehaviour
         // 正向移动
         KTween.AddTween(gameObject, duration, (t) =>
         {
-            float x = KTweenFunc.linear(0f, distance, t);
+            float x = KTweenFunc.easeLinear(0f, distance, t);
             transform.position = m_StartPos + new Vector3(x, 0f, 0f);
         });
     }

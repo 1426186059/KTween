@@ -38,7 +38,7 @@ public class Example_05_DelayAndChain : MonoBehaviour
 
             var tween = KTween.AddTween(gameObject, moveDuration, (t) =>
             {
-                transform.position = KTweenFunc.linear(from, to, t);
+                transform.position = KTweenFunc.easeLinear(from, to, t);
             });
 
             if (last != null)
