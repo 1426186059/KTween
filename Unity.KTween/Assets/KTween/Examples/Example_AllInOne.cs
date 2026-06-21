@@ -389,4 +389,27 @@ public class Example_AllInOne : MonoBehaviour
     {
         Demo_CancelAllTweens();
     }
+
+    // ============================================================
+    // 21. Handle 作为动画序列容器
+    // ============================================================
+    [ContextMenu("21 - Handle 序列动画")]
+    public void Demo_HandleSequence()
+    {
+        Vector3 p0 = transform.position;
+        Vector3 p1 = p0 + Vector3.right * 4f;
+        Vector3 p2 = p1 + Vector3.forward * 3f;
+        Vector3 p3 = p2 + Vector3.up * 3f;
+
+        // 用空 Handle 构建序列：依次移动 → 右移 → 前进 → 上升
+        KTween.Handle seq = new KTween.Handle();
+        seq.AppendTween(KTween.AddTween(gameObject, 1.0f, (t) =>
+            transform.position = Vector3.Lerp(p0, p1, t)));
+        seq.AppendTween(KTween.AddTween(gameObject, 1.0f, (t) =>
+            transform.position = Vector3.Lerp(p1, p2, t)));
+        seq.AppendTween(KTween.AddTween(gameObject, 1.0f, (t) =>
+            transform.position = Vector3.Lerp(p2, p3, t)));
+
+        Debug.Log("Handle 序列已启动: 右移 → 前进 → 上升");
+    }
 }

@@ -38,6 +38,7 @@ protected:
     void Demo_MultiTweenCombined(const TArray<AActor*>& Targets);
     void Demo_CancelHandle(const TArray<AActor*>& Targets);
     void Demo_100Objects(const TArray<AActor*>& Targets);
+    void Demo_HandleSequence(const TArray<AActor*>& Targets);
 
     UPROPERTY()
     TArray<AActor*> mSpawnedActors;

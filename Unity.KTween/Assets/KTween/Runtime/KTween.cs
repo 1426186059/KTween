@@ -80,6 +80,19 @@ public static partial class KTween
             }
         }
 
+        public void AppendTween(TweenItem mOtherTween)
+        {
+            if (IsValid() && mOtherTween != null)
+            {
+                mInnerPtr.AppendTween(mOtherTween);
+            }
+            else
+            {
+                this.mInnerPtr = mOtherTween;
+                this.nVersion = mOtherTween.nVersion;
+            }
+        }
+
         public void Cancel()
         {
             if (IsValid())

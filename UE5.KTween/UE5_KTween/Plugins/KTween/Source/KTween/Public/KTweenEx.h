@@ -5,7 +5,7 @@
 #include "Components/CanvasPanelSlot.h"
 #include "KTween.h"
 
-class KTweenExtentions
+class KTweenEx
 {
 public:
     // ── 主方法：返回 TweenItem，缓动由 SetEase 自动处理 ──

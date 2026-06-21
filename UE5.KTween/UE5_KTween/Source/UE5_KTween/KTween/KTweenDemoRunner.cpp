@@ -361,6 +361,41 @@ void AKTweenDemoRunner::Demo_100Objects(const TArray<AActor*>& Targets)
 }
 
 // ──────────────────────────────────────────────────────────────────────
+// 11. Handle 序列动画 — 用空 Handle 构建链式序列
+// ──────────────────────────────────────────────────────────────────────
+void AKTweenDemoRunner::Demo_HandleSequence(const TArray<AActor*>& Targets)
+{
+    for (int32 i = 0; i < Targets.Num(); i++)
+    {
+        FVector P0 = Targets[i]->GetActorLocation();
+        FVector P1 = P0 + FVector(0, 0, 250);
+        FVector P2 = P1 + FVector(0, 250, 0);
+        FVector P3 = P2 + FVector(0, 0, -250);
+        int32 Idx = i;
+
+        // 用空 Handle 构建序列：上升 → 右移 → 下降
+        KTween::Handle Seq;
+        Seq.AppendTween(KTween::AddTween(Targets[i], Duration * 0.5f,
+            [Targets, Idx, P0, P1](float T)
+            {
+                Targets[Idx]->SetActorLocation(FMath::Lerp(P0, P1, T));
+            })->SetEase(KTween::EaseType::easeOutQuad));
+
+        Seq.AppendTween(KTween::AddTween(Targets[i], Duration * 0.5f,
+            [Targets, Idx, P1, P2](float T)
+            {
+                Targets[Idx]->SetActorLocation(FMath::Lerp(P1, P2, T));
+            })->SetEase(KTween::EaseType::easeInOutSine));
+
+        Seq.AppendTween(KTween::AddTween(Targets[i], Duration * 0.5f,
+            [Targets, Idx, P2, P3](float T)
+            {
+                Targets[Idx]->SetActorLocation(FMath::Lerp(P2, P3, T));
+            })->SetEase(KTween::EaseType::easeInQuad));
+    }
+}
+
+// ──────────────────────────────────────────────────────────────────────
 // Run All Demos
 // ──────────────────────────────────────────────────────────────────────
 void AKTweenDemoRunner::RunAllDemos()
@@ -400,6 +435,9 @@ void AKTweenDemoRunner::RunAllDemos()
     // 10. 100+ Objects Wave (10x15 = 150)
     Demo_100Objects(SpawnGridBatch(10, 15, 100, FVector(200, 700, 0)));
 
-    UE_LOG(LogTemp, Warning, TEXT("KTween Demo: Spawned %d objects across 10 demos! Play in editor to see animations."),
+    // 11. Handle Sequence (1x6 = 6)
+    Demo_HandleSequence(SpawnGridBatch(1, 6, 140, FVector(1200, 0, 0)));
+
+    UE_LOG(LogTemp, Warning, TEXT("KTween Demo: Spawned %d objects across 11 demos! Play in editor to see animations."),
            mSpawnedActors.Num());
 }
