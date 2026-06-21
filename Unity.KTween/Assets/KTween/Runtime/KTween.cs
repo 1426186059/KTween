@@ -36,6 +36,21 @@ public static partial class KTween
         return AddTween(obj, time, null, finishFunc);
     }
 
+    public static void CancelAll()
+    {
+        KTweenMgr.Instance.CancelAll();
+    }
+
+    public static void Cancel(GameObject obj)
+    {
+        KTweenMgr.Instance.Cancel(obj);
+    }
+
+    public static void Cancel(TweenItemHandle handle)
+    {
+        handle.Cancel();
+    }
+
     public struct TweenItemHandle : IDisposable
     {
         private uint nVersion;
@@ -105,6 +120,16 @@ public static partial class KTween
         public void SetMaxTweenCount(int nCount)
         {
             mManager.SetMaxTweenCount(nCount);
+        }
+
+        public void CancelAll()
+        {
+            mManager.CancelAll();
+        }
+
+        public void Cancel(GameObject obj)
+        {
+            mManager.Cancel(obj);
         }
 
         public TweenItem AddTween(float time, Action<float> updateFunc = null, Action finishFunc = null)

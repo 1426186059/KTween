@@ -128,5 +128,20 @@ public static partial class KTween
         {
             mItemPool.SetMaxCapacity(nCount);
         }
+
+        public void CancelAll()
+        {
+            foreach (var mItem in mTweenT)
+                mItem.toggle = false;
+        }
+
+        public void Cancel(GameObject obj)
+        {
+            foreach (var mItem in mTweenT)
+            {
+                if (mItem.bindObj == obj)
+                    mItem.toggle = false;
+            }
+        }
     }
 }

@@ -145,5 +145,26 @@ public static partial class KTween
         {
             mItemPool.SetMaxCapacity(nCount);
         }
+
+        public void CancelAll()
+        {
+            var mNode = mTweenT.First;
+            while (mNode != null)
+            {
+                mNode.Value.toggle = false;
+                mNode = mNode.Next;
+            }
+        }
+
+        public void Cancel(GameObject obj)
+        {
+            var mNode = mTweenT.First;
+            while (mNode != null)
+            {
+                if (mNode.Value.bindObj == obj)
+                    mNode.Value.toggle = false;
+                mNode = mNode.Next;
+            }
+        }
     }
 }

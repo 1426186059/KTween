@@ -186,6 +186,11 @@ public:
         AKTweenMgr::GetSingleton()->Cancel(obj);
     }
 
+    static void Cancel(Handle handle)
+    {
+        handle.Cancel();
+    }
+
     static TSharedPtr<KTweenItem> AddTween(float time, Action_Float_Delegate updateFunc = nullptr, ActionDelegate finishFunc = nullptr)
     {
         return AKTweenMgr::GetSingleton()->AddTween(nullptr, time, updateFunc, finishFunc);
