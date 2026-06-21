@@ -1,7 +1,6 @@
 #pragma once
 
 #define DEFAULT_TWEEN_MAX_COUNT 1500
-#define USE_LinkedList
 
 #include "CoreMinimal.h"
 #include "Engine/Engine.h"
@@ -26,7 +25,6 @@ namespace KTweenAPI
         easeSpring, easeShake, punch, once, clamp, pingPong, animationCurve
     };
 
-    class KTweenByList;
     class KTweenItem;
     class ObjectPool;
 
@@ -50,7 +48,6 @@ namespace KTweenAPI
         FVector From;
         FVector To;
 
-#ifdef USE_LinkedList
         TDoubleLinkedList<TSharedPtr<KTweenItem>>::TDoubleLinkedListNode* mNodeEntry = nullptr;
         TDoubleLinkedList<TSharedPtr<KTweenItem>>::TDoubleLinkedListNode* GetNodeEntry()
         {
@@ -60,19 +57,16 @@ namespace KTweenAPI
             }
             return this->mNodeEntry;
         }
-#endif
 
         ~KTweenItem()
         {
             UE_LOG(LogTemp, Log, TEXT("~KTweenItem Destroy"));
 
-#ifdef USE_LinkedList
             if (mNodeEntry)
             {
                 delete mNodeEntry;
                 mNodeEntry = nullptr;
             }
-#endif
         }
     private:
         void OnPoolPop()
@@ -88,13 +82,11 @@ namespace KTweenAPI
 
         void OnPoolDestory()
         {
-#ifdef USE_LinkedList
             if (mNodeEntry)
             {
                 delete mNodeEntry;
                 mNodeEntry = nullptr;
             }
-#endif
         }
 
         KTweenItem()
@@ -239,7 +231,6 @@ namespace KTweenAPI
         }
     };
 
-#ifdef USE_LinkedList
     class KTweenByLinkedList
     {
     private:
@@ -263,28 +254,6 @@ namespace KTweenAPI
             TSharedPtr<KTweenItem> mItem);
 
     };
-
-#else
-    class KTweenByList
-    {
-    private:
-        ObjectPool mItemPool;
-        TArray<TSharedPtr<KTweenItem>> mTweenT;
-        AKTweenMgr* defaultBindObj;
-    public:
-        KTweenByList(AKTweenMgr* mDefaultBindObj);
-
-        void Update(float DeltaTime);
-        void SetMaxTweenCount(int nCount);
-        void Cancel(UObject* obj);
-        void CancelAll();
-        TSharedPtr<KTweenAPI::KTweenItem> AddTween(
-            UObject* obj,
-            float time,
-            Action_Float_Delegate updateFunc = nullptr,
-            ActionDelegate finishFunc = nullptr);
-    };
-#endif
 
 };
 

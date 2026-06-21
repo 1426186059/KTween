@@ -1,8 +1,8 @@
 ﻿
+
 #include "KTweenHead.h"
 #include "KTween.h"
 
-#ifdef USE_LinkedList
 namespace KTweenAPI
 {
     KTweenByLinkedList::KTweenByLinkedList(AKTweenMgr* mDefaultBindObj)
@@ -209,4 +209,3 @@ namespace KTweenAPI
         }
     }
 }
-#endif

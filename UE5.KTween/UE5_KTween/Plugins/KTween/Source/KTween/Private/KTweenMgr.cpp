@@ -11,11 +11,7 @@ void AKTweenMgr::EnsureManager()
 {
     if (mManager == nullptr)
     {
-#ifdef USE_LinkedList
         this->mManager = new KTweenAPI::KTweenByLinkedList(this);
-#else
-        this->mManager = new KTweenAPI::KTweenByList(this);
-#endif
     }
 }
 

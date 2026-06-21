@@ -4,7 +4,7 @@
 
 ## 设计目标
 
-KTween 的核心定位是 **一套 API，多引擎通用**。引擎适配层（`KTweenByLinkedList` / `KTweenByList`）与引擎解耦，移植到新引擎只需实现 2 个接口：
+KTween 的核心定位是 **一套 API，多引擎通用**。引擎适配层（`KTweenByLinkedList`）与引擎解耦，移植到新引擎只需实现 2 个接口：
 
 1. **更新驱动** — 每帧调用 `KTweenByLinkedList::Update(dt)`
 2. **材质/变换 API** — 根据引擎特性实现 `KTweenEx` 扩展方法
@@ -15,7 +15,7 @@ KTween 的核心定位是 **一套 API，多引擎通用**。引擎适配层（`
 
 - **跨引擎 API 一致**：Unity C# 与 UE5 C++ 的调用方式完全相同
 - **30+ 缓动函数**：LeanTween 命名风格，`ApplyEase(enum, percent) → percent` 统一入口
-- **双驱动模式**：双向链表（高插入删除） / TArray（低内存碎片），预处理宏一键切换
+- **双向链表驱动**：高插入删除性能，适合频繁添加/取消动画的场景
 - **Handle 安全句柄**：版本号检测，避免操作已过期的动画对象
 - **链式序列**：基于延迟偏移的 `AppendTween` 动画编排
 - **自动生命周期**：绑定对象销毁时自动停止动画
@@ -190,8 +190,7 @@ Unity.KTween/Assets/KTween/
 │   ├── KTween.cs                     # 主 API + Handle + TweenItem + 对象池
 │   ├── KTweenFunc.cs                 # 缓动函数核心（零引擎依赖）
 │   ├── KTweenEx.cs                   # 引擎扩展方法（Transform / UI）
-│   ├── KTweenByLinkedList.cs         # 双向链表驱动
-│   └── KTweenByList.cs               # 数组驱动
+│   └── KTweenByLinkedList.cs         # 双向链表驱动
 ├── Editor/
 │   └── KTweenMgrEditor.cs
 ├── Examples/                         # 13 个示例脚本
@@ -216,7 +215,7 @@ UE5.KTween/Plugins/KTween/
         ├── KTweenEx.h                # UMG 扩展方法
         └── KTweenHead.h              # 数据结构 + AKTweenMgr
         └── Private/
-            ├── KTweenByLinkedList.cpp # 链表驱动
+            ├── KTweenByLinkedList.cpp # 双向链表驱动
             └── KTweenMgr.cpp          # 引擎适配层
 ```
 
