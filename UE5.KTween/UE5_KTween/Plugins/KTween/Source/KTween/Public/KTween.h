@@ -51,7 +51,7 @@ public:
         {
             if (IsValid() && mOtherTween.IsValid())
             {
-                mInnerPtr.Pin()->AppendTween(mOtherTween);
+                mInnerPtr.Pin()->AppendTween(mOtherTween.Get());
             }
             else
             {
