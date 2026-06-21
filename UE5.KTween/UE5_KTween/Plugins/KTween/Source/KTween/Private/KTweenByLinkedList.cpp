@@ -1,5 +1,5 @@
 ﻿
-#include "KTween/KTweenHead.h"
+#include "KTweenHead.h"
 
 #ifdef USE_LinkedList
 namespace KTweenAPI

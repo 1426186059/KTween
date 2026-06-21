@@ -1,5 +1,5 @@
 #include "KTweenDemoRunner.h"
-#include "KTween/KTweenHead.h"
+#include "KTweenHead.h"
 #include "Engine/World.h"
 #include "Engine/StaticMeshActor.h"
 #include "Materials/MaterialInstanceDynamic.h"
@@ -112,18 +112,18 @@ void AKTweenDemoRunner::Demo_BasicMove(const TArray<AActor*>& Targets)
 }
 
 // ──────────────────────────────────────────────────────────────────────
-// 2. Scale Pulse
+// 2. Scale Pulse — 使用新 Apply() 接口
 // ──────────────────────────────────────────────────────────────────────
 void AKTweenDemoRunner::Demo_ScalePulse(const TArray<AActor*>& Targets)
 {
     for (int32 i = 0; i < Targets.Num(); i++)
     {
         int32 Idx = i;
-        auto EaseFunc = KTween::GetEaseFunc<FVector>(KTween::EaseType::easeInOutSine);
         KTween::AddTween(Targets[i], Duration * 0.5f,
-            [Targets, Idx, EaseFunc](float T)
+            [Targets, Idx](float T)
             {
-                Targets[Idx]->SetActorScale3D(EaseFunc(FVector(0.4f), FVector(1.5f), T));
+                FVector S = KTween::EaseFunc::Apply<FVector>(FVector(0.4f), FVector(1.5f), T, KTween::EaseType::easeInOutSine);
+                Targets[Idx]->SetActorScale3D(S);
             }
         )->SetLoopPingPong(-1);
     }
@@ -219,16 +219,23 @@ void AKTweenDemoRunner::Demo_PingPong(const TArray<AActor*>& Targets)
 }
 
 // ──────────────────────────────────────────────────────────────────────
-// 7. Ease Type Comparison
+// 7. Ease Type Comparison — 全部 30+ 缓动类型测试
 // ──────────────────────────────────────────────────────────────────────
 void AKTweenDemoRunner::Demo_EaseComparison(const TArray<AActor*>& Targets)
 {
     TArray<KTween::EaseType> EaseTypes = {
-        KTween::EaseType::linear, KTween::EaseType::easeInQuad,
-        KTween::EaseType::easeOutQuad, KTween::EaseType::easeInOutQuad,
-        KTween::EaseType::easeInCubic, KTween::EaseType::easeOutCubic,
-        KTween::EaseType::easeInOutCubic, KTween::EaseType::easeInSine,
-        KTween::EaseType::easeOutSine, KTween::EaseType::easeInOutSine,
+        KTween::EaseType::linear,
+        KTween::EaseType::easeInQuad,    KTween::EaseType::easeOutQuad,    KTween::EaseType::easeInOutQuad,
+        KTween::EaseType::easeInCubic,   KTween::EaseType::easeOutCubic,   KTween::EaseType::easeInOutCubic,
+        KTween::EaseType::easeInQuart,   KTween::EaseType::easeOutQuart,   KTween::EaseType::easeInOutQuart,
+        KTween::EaseType::easeInQuint,   KTween::EaseType::easeOutQuint,   KTween::EaseType::easeInOutQuint,
+        KTween::EaseType::easeInSine,    KTween::EaseType::easeOutSine,    KTween::EaseType::easeInOutSine,
+        KTween::EaseType::easeInExpo,    KTween::EaseType::easeOutExpo,    KTween::EaseType::easeInOutExpo,
+        KTween::EaseType::easeInCirc,    KTween::EaseType::easeOutCirc,    KTween::EaseType::easeInOutCirc,
+        KTween::EaseType::easeInBounce,  KTween::EaseType::easeOutBounce,  KTween::EaseType::easeInOutBounce,
+        KTween::EaseType::easeInBack,    KTween::EaseType::easeOutBack,    KTween::EaseType::easeInOutBack,
+        KTween::EaseType::easeInElastic, KTween::EaseType::easeOutElastic, KTween::EaseType::easeInOutElastic,
+        KTween::EaseType::easeSpring,    KTween::EaseType::easeShake,      KTween::EaseType::punch,
     };
     int32 Count = FMath::Min(Targets.Num(), EaseTypes.Num());
 
@@ -237,11 +244,12 @@ void AKTweenDemoRunner::Demo_EaseComparison(const TArray<AActor*>& Targets)
         FVector StartLoc = Targets[i]->GetActorLocation();
         FVector EndLoc = StartLoc + FVector(500, 0, 0);
         int32 Idx = i;
-        auto EaseFunc = KTween::GetEaseFunc<FVector>(EaseTypes[i]);
+        KTween::EaseType Type = EaseTypes[i];
         KTween::AddTween(Targets[i], Duration * 1.5f,
-            [Targets, Idx, StartLoc, EndLoc, EaseFunc](float T)
+            [Targets, Idx, StartLoc, EndLoc, Type](float T)
             {
-                Targets[Idx]->SetActorLocation(EaseFunc(StartLoc, EndLoc, T));
+                FVector Pos = KTween::EaseFunc::Apply<FVector>(StartLoc, EndLoc, T, Type);
+                Targets[Idx]->SetActorLocation(Pos);
             }
         )->SetLoopPingPong(-1);
     }

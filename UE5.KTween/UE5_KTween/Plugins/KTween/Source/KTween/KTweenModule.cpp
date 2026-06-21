@@ -1,4 +1,4 @@
-#include "KTween.h"
+#include "KTweenModule.h"
 
 IMPLEMENT_MODULE(FDefaultModuleImpl, KTween);
 DEFINE_LOG_CATEGORY(LogKTween);
