@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
-#include "KTween.h"
+#include "KTween/KTween.h"
 #include "KTweenDemoRunner.generated.h"
 
 UCLASS()

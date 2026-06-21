@@ -271,7 +271,7 @@ namespace KTweenAPI
 
 
 UCLASS()
-class UE5_KTWEEN_API AKTweenMgr : public AActor
+class KTWEEN_API AKTweenMgr : public AActor
 {
     GENERATED_BODY()
 

@@ -1,0 +1,23 @@
+{
+    "FileVersion": 3,
+    "Version": 1,
+    "VersionName": "1.0",
+    "FriendlyName": "KTween",
+    "Description": "Lightweight tween animation library for UE5",
+    "Category": "Animation",
+    "CreatedBy": "",
+    "CreatedByURL": "",
+    "DocsURL": "",
+    "MarketplaceURL": "",
+    "SupportURL": "",
+    "CanContainContent": false,
+    "IsBetaVersion": false,
+    "Installed": false,
+    "Modules": [
+        {
+            "Name": "KTween",
+            "Type": "Runtime",
+            "LoadingPhase": "Default"
+        }
+    ]
+}
