@@ -43,6 +43,7 @@ public class ExampleRunner : MonoBehaviour
             new DemoEntry { Name = "12 - 弹跳效果", CreateAction = CreateDemo_Bounce },
             new DemoEntry { Name = "13 - UI 淡入淡出", CreateAction = CreateDemo_UI_Fade },
             new DemoEntry { Name = "14 - 组合动画", CreateAction = CreateDemo_Combined },
+            new DemoEntry { Name = "15 - move(path) 路径数组", CreateAction = CreateDemo_PathMoveEx },
         };
     }
 
@@ -277,6 +278,13 @@ public class ExampleRunner : MonoBehaviour
             cube.transform.localScale = KTweenFunc.easeLinear(startScale, endScale, t);
             cube.transform.eulerAngles = KTweenFunc.easeLinear(Vector3.zero, new Vector3(0f, 0f, 360f), t);
         }).SetLoopPingPong(-1);
+    }
+
+    private void CreateDemo_PathMoveEx(GameObject parent, Vector3 origin)
+    {
+        var controller = parent.AddComponent<Example_14_PathMoveEx>();
+        controller.totalTime = 4f;
+        controller.autoPlay = true;
     }
 
     // ============================================================

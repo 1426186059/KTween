@@ -154,6 +154,92 @@ public class Example_ExDemos : MonoBehaviour
         var m1 = KTweenEx.move(chain, new Vector3(3f, y - 0.5f, 0f), 0.8f).SetEase(KTweenType.easeOutQuad);
         var m2 = KTweenEx.move(chain, new Vector3(0f, y - 0.5f, 0f), 0.8f).SetEase(KTweenType.easeInQuad);
         m1.AppendTween(m2).SetLoop(-1);
+
+        y -= 2.5f;
+
+        // ---------- move(path[]) 线性路径 (XY平面) ----------
+        Label($"move(path[]) 线性路径", new Vector3(-6f, y, 0f));
+        var pathSphere = CreateSphere(Color.cyan, new Vector3(-6f, y - 0.5f, 0f));
+        pathSphere.transform.localScale = Vector3.one * 0.5f;
+        Vector3[] linearPath = {
+            new Vector3(-6f, y - 0.5f, 0f),
+            new Vector3(-4f, y + 1f,   0f),
+            new Vector3(-2f, y - 0.5f, 0f),
+            new Vector3(-4f, y - 2f,   0f),
+            new Vector3(-6f, y - 0.5f, 0f),
+        };
+        KTweenEx.move(pathSphere, linearPath, 3f).SetEase(KTweenType.easeInOutQuad).SetLoop(-1);
+
+        // ---------- moveBezier(path[]) 贝塞尔路径 (XY平面) ----------
+        Label($"moveBezier(path[]) 贝塞尔", new Vector3(0f, y, 0f));
+        var bezSphere = CreateSphere(Color.magenta, new Vector3(0f, y - 0.5f, 0f));
+        bezSphere.transform.localScale = Vector3.one * 0.5f;
+        Vector3[] bezPath = {
+            new Vector3(-1f, y - 0.5f, 0f),
+            new Vector3( 1f, y + 1f,   0f),
+            new Vector3( 3f, y + 1f,   0f),
+            new Vector3( 5f, y - 0.5f, 0f),
+        };
+        KTweenEx.moveBezier(bezSphere, bezPath, 2.5f).SetEase(KTweenType.linear).SetLoopPingPong(-1);
+
+        // ---------- moveLocal(path[]) 本地线性路径 (XY平面, 父节点绕Z轴旋转) ----------
+        Label($"moveLocal(path[]) 本地", new Vector3(7f, y, 0f));
+        var localParent = new GameObject("ExLocalParent");
+        localParent.transform.position = new Vector3(7f, y - 0.5f, 0f);
+        KTweenEx.rotateAround(localParent, Vector3.forward, 360f, 6f).SetEase(KTweenType.linear).SetLoop(-1);
+        var localSphere = CreateSphere(Color.green, Vector3.zero);
+        localSphere.transform.SetParent(localParent.transform);
+        localSphere.transform.localPosition = Vector3.zero;
+        localSphere.transform.localScale = Vector3.one * 0.5f;
+        Vector3[] localLinearPath = {
+            Vector3.zero,
+            new Vector3( 1.5f, 0f,   0f),
+            new Vector3( 1.5f, 1.5f, 0f),
+            new Vector3( 0f,   1.5f, 0f),
+            Vector3.zero,
+        };
+        KTweenEx.moveLocal(localSphere, localLinearPath, 3f).SetEase(KTweenType.easeInOutQuad).SetLoop(-1);
+
+        y -= 2.5f;
+
+        // ---------- move(path[]) 锯齿 + easeOutBounce ----------
+        Label($"move(path[]) 锯齿", new Vector3(-6f, y, 0f));
+        var zigSphere = CreateSphere(Color.yellow, new Vector3(-6f, y - 0.5f, 0f));
+        zigSphere.transform.localScale = Vector3.one * 0.45f;
+        Vector3[] zigPath = {
+            new Vector3(-6f, y - 0.5f, 0f),
+            new Vector3(-5f, y + 0.5f, 0f),
+            new Vector3(-4f, y - 0.5f, 0f),
+            new Vector3(-3f, y + 0.5f, 0f),
+            new Vector3(-2f, y - 0.5f, 0f),
+        };
+        KTweenEx.move(zigSphere, zigPath, 2f).SetEase(KTweenType.easeOutBounce).SetLoopPingPong(-1);
+
+        // ---------- move(path[]) 八边形拟圆 + linear ----------
+        Label($"move(path[]) 圆形", new Vector3(0f, y, 0f));
+        var cirSphere = CreateSphere(Color.blue, new Vector3(0f, y - 0.5f, 0f));
+        cirSphere.transform.localScale = Vector3.one * 0.45f;
+        int n = 8;
+        float r = 1.2f;
+        Vector3[] cirPath = new Vector3[n + 1];
+        for (int i = 0; i <= n; i++)
+        {
+            float a = Mathf.PI * 2f * i / n - Mathf.PI / 2f;
+            cirPath[i] = new Vector3(Mathf.Cos(a) * r, y - 0.5f + Mathf.Sin(a) * r, 0f);
+        }
+        KTweenEx.move(cirSphere, cirPath, 3f).SetEase(KTweenType.linear).SetLoop(-1);
+
+        // ---------- moveBezier(path[]) 单段U贝塞尔 + PingPong ----------
+        Label($"moveBezier(path[]) U型", new Vector3(7f, y, 0f));
+        var uSphere = CreateSphere(Color.red, new Vector3(7f, y - 0.5f, 0f));
+        uSphere.transform.localScale = Vector3.one * 0.45f;
+        Vector3[] uBez = {
+            new Vector3( 6f, y - 0.5f, 0f),
+            new Vector3( 6f, y + 1f,   0f),
+            new Vector3( 8f, y + 1f,   0f),
+            new Vector3( 8f, y - 0.5f, 0f),
+        };
+        KTweenEx.moveBezier(uSphere, uBez, 2.5f).SetEase(KTweenType.linear).SetLoopPingPong(-1);
     }
 
     // ==============================================================

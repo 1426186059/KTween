@@ -17,6 +17,53 @@ public static class KTweenEx
         });
     }
 
+    /// <summary>
+    /// 沿路径点数组移动 — 总时间均匀分配到每一段
+    /// path.Length = 4 → 3 段，每段占 1/3 时间
+    /// </summary>
+    public static KTween.TweenItem move(GameObject obj, Vector3[] path, float time)
+    {
+        int segCount = path.Length - 1;
+        if (segCount <= 0) return null;
+        Vector3[] p = path; // 捕获副本
+        return KTween.AddTween(obj, time, fPercent =>
+        {
+            if (fPercent >= 1f) { obj.transform.position = p[p.Length - 1]; return; }
+            float t = fPercent * segCount;
+            int idx = (int)t;
+            if (idx >= segCount) idx = segCount - 1;
+            float segT = t - idx;
+            obj.transform.position = Vector3.Lerp(p[idx], p[idx + 1], segT);
+        });
+    }
+
+    /// <summary>
+    /// 贝塞尔曲线路径移动 — 三次贝塞尔串联
+    /// 路径长度必须为 3n+1（4, 7, 10, 13...），每 4 个点 = 一段贝塞尔
+    /// </summary>
+    public static KTween.TweenItem moveBezier(GameObject obj, Vector3[] path, float time)
+    {
+        int segCount = (path.Length - 1) / 3;
+        if (segCount <= 0 || (path.Length - 1) % 3 != 0) return null;
+        Vector3[] p = path;
+        return KTween.AddTween(obj, time, fPercent =>
+        {
+            if (fPercent >= 1f) { obj.transform.position = p[p.Length - 1]; return; }
+            float t = fPercent * segCount;
+            int segIdx = (int)t;
+            if (segIdx >= segCount) segIdx = segCount - 1;
+            float bt = t - segIdx; // 段内 t [0,1]
+
+            int i = segIdx * 3; // P0, P1, P2, P3 起始下标
+            float u = 1f - bt;
+            obj.transform.position =
+                u * u * u * p[i] +
+                3f * u * u * bt * p[i + 1] +
+                3f * u * bt * bt * p[i + 2] +
+                bt * bt * bt * p[i + 3];
+        });
+    }
+
     public static KTween.TweenItem moveX(GameObject obj, float x, float time)
     {
         Vector3 from = obj.transform.position;
@@ -57,6 +104,45 @@ public static class KTweenEx
         return KTween.AddTween(obj, time, fPercent =>
         {
             obj.transform.localPosition = Vector3.Lerp(from, to, fPercent);
+        });
+    }
+
+    public static KTween.TweenItem moveLocal(GameObject obj, Vector3[] path, float time)
+    {
+        int segCount = path.Length - 1;
+        if (segCount <= 0) return null;
+        Vector3[] p = path;
+        return KTween.AddTween(obj, time, fPercent =>
+        {
+            if (fPercent >= 1f) { obj.transform.localPosition = p[p.Length - 1]; return; }
+            float t = fPercent * segCount;
+            int idx = (int)t;
+            if (idx >= segCount) idx = segCount - 1;
+            float segT = t - idx;
+            obj.transform.localPosition = Vector3.Lerp(p[idx], p[idx + 1], segT);
+        });
+    }
+
+    public static KTween.TweenItem moveLocalBezier(GameObject obj, Vector3[] path, float time)
+    {
+        int segCount = (path.Length - 1) / 3;
+        if (segCount <= 0 || (path.Length - 1) % 3 != 0) return null;
+        Vector3[] p = path;
+        return KTween.AddTween(obj, time, fPercent =>
+        {
+            if (fPercent >= 1f) { obj.transform.localPosition = p[p.Length - 1]; return; }
+            float t = fPercent * segCount;
+            int segIdx = (int)t;
+            if (segIdx >= segCount) segIdx = segCount - 1;
+            float bt = t - segIdx;
+
+            int i = segIdx * 3;
+            float u = 1f - bt;
+            obj.transform.localPosition =
+                u * u * u * p[i] +
+                3f * u * u * bt * p[i + 1] +
+                3f * u * bt * bt * p[i + 2] +
+                bt * bt * bt * p[i + 3];
         });
     }
 
