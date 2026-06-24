@@ -395,6 +395,245 @@ void AKTweenDemoRunner::Demo_HandleSequence(const TArray<AActor*>& Targets)
     }
 }
 
+// ══════════════════════════════════════════════════════════════════════
+// 12. Path Linear — move(path[]) 线性路径 (菱形 / 锯齿 / 圆形)
+// ══════════════════════════════════════════════════════════════════════
+void AKTweenDemoRunner::Demo_PathLinear(const TArray<AActor*>& Targets)
+{
+    if (Targets.Num() < 3) return;
+
+    // Actor 0: Diamond path (5-point closed, easeInOutQuad, Loop)
+    {
+        FVector O = Targets[0]->GetActorLocation();
+        TArray<FVector> diamondPath = {
+            O + FVector(-150, 0, 0),
+            O + FVector(0, 150, 0),
+            O + FVector(150, 0, 0),
+            O + FVector(0, -150, 0),
+            O + FVector(-150, 0, 0),
+        };
+        KTweenEx::Move(Targets[0], diamondPath, Duration * 2.5f)
+            ->SetEase(KTweenType::easeInOutQuad)->SetLoop(-1);
+    }
+
+    // Actor 1: Zigzag path (5-point, easeOutBounce, PingPong)
+    {
+        FVector O = Targets[1]->GetActorLocation();
+        TArray<FVector> zigPath = {
+            O + FVector(-150, -100, 0),
+            O + FVector(-75,  100, 0),
+            O + FVector(0,   -100, 0),
+            O + FVector(75,   100, 0),
+            O + FVector(150, -100, 0),
+        };
+        KTweenEx::Move(Targets[1], zigPath, Duration * 1.8f)
+            ->SetEase(KTweenType::easeOutBounce)->SetLoopPingPong(-1);
+    }
+
+    // Actor 2: Octagon circle (9-point, linear, Loop)
+    {
+        FVector O = Targets[2]->GetActorLocation();
+        TArray<FVector> cirPath;
+        int32 n = 8;
+        float r = 130.0f;
+        for (int32 i = 0; i <= n; i++)
+        {
+            float a = UE_PI * 2.0f * i / n - UE_PI / 2.0f;
+            cirPath.Add(O + FVector(FMath::Cos(a) * r, FMath::Sin(a) * r, 0));
+        }
+        KTweenEx::Move(Targets[2], cirPath, Duration * 2.5f)
+            ->SetEase(KTweenType::linear)->SetLoop(-1);
+    }
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// 13. Path Bezier — moveBezier(path[]) 贝塞尔曲线 (S / U / 花形)
+// ══════════════════════════════════════════════════════════════════════
+void AKTweenDemoRunner::Demo_PathBezier(const TArray<AActor*>& Targets)
+{
+    if (Targets.Num() < 3) return;
+
+    // Actor 0: S-curve (7-point, 2 segments, PingPong)
+    {
+        FVector O = Targets[0]->GetActorLocation();
+        TArray<FVector> sPath = {
+            O + FVector(-150, -120, 0),  // P0
+            O + FVector(-50,  -200, 0),  // C1
+            O + FVector(0,    -30,  0),  // C2
+            O + FVector(0,     0,   0),  // P1 (shared)
+            O + FVector(0,     30,  0),  // C1
+            O + FVector(50,    200, 0),  // C2
+            O + FVector(150,   120, 0),  // P2
+        };
+        KTweenEx::MoveBezier(Targets[0], sPath, Duration * 2.2f)
+            ->SetEase(KTweenType::linear)->SetLoopPingPong(-1);
+    }
+
+    // Actor 1: U-curve (4-point, 1 segment, PingPong)
+    {
+        FVector O = Targets[1]->GetActorLocation();
+        TArray<FVector> uPath = {
+            O + FVector(-100, -120, 0),  // P0
+            O + FVector(-100,  120, 0),  // C1
+            O + FVector( 100,  120, 0),  // C2
+            O + FVector( 100, -120, 0),  // P1
+        };
+        KTweenEx::MoveBezier(Targets[1], uPath, Duration * 2.0f)
+            ->SetEase(KTweenType::linear)->SetLoopPingPong(-1);
+    }
+
+    // Actor 2: Flower/ellipse bezier (7-point closed, 2 segments, Loop)
+    {
+        FVector O = Targets[2]->GetActorLocation();
+        TArray<FVector> flowerPath = {
+            O + FVector(-150, 0,   0),   // P0
+            O + FVector(-150, 90,  0),   // C1
+            O + FVector( 150, 90,  0),   // C2
+            O + FVector( 150, 0,   0),   // P1
+            O + FVector( 150, -90, 0),   // C1
+            O + FVector(-150, -90, 0),   // C2
+            O + FVector(-150, 0,   0),   // P2 (back to start)
+        };
+        KTweenEx::MoveBezier(Targets[2], flowerPath, Duration * 3.0f)
+            ->SetEase(KTweenType::linear)->SetLoop(-1);
+    }
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// 14. Path Local — moveLocal(path[]) / moveLocalBezier(path[]) + 旋转父节点
+// ══════════════════════════════════════════════════════════════════════
+void AKTweenDemoRunner::Demo_PathLocal()
+{
+    UWorld* World = GetWorld();
+    if (!World) return;
+
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+    // ── Pair 1: 父节点绕 Yaw 旋转 + 子节点线性菱形路径 ──
+    {
+        AActor* Parent = World->SpawnActor<AActor>(FVector(-600, 1000, 0), FRotator::ZeroRotator, SpawnParams);
+        mSpawnedActors.Add(Parent);
+
+        AActor* Child = SpawnShape(FVector::ZeroVector, FColor::Green, 1, 0.4f); // Sphere
+        Child->AttachToActor(Parent, FAttachmentTransformRules::KeepRelativeTransform);
+        Child->SetActorRelativeLocation(FVector::ZeroVector);
+        mSpawnedActors.Add(Child);
+
+        // 父节点 Yaw 旋转
+        KTweenEx::RotateAround(Parent, FVector(0, 0, 1), 360.0f, Duration * 3.5f)
+            ->SetEase(KTweenType::linear)->SetLoop(-1);
+
+        // 子节点本地菱形路径
+        TArray<FVector> localDiamond = {
+            FVector(-100, 0, 0),
+            FVector(0, 100, 0),
+            FVector(100, 0, 0),
+            FVector(0, -100, 0),
+            FVector(-100, 0, 0),
+        };
+        KTweenEx::MoveLocal(Child, localDiamond, Duration * 2.5f)
+            ->SetEase(KTweenType::easeInOutQuad)->SetLoop(-1);
+    }
+
+    // ── Pair 2: 父节点反向旋转 + 子节点贝塞尔花形路径 ──
+    {
+        AActor* Parent = World->SpawnActor<AActor>(FVector(0, 1000, 0), FRotator::ZeroRotator, SpawnParams);
+        mSpawnedActors.Add(Parent);
+
+        AActor* Child = SpawnShape(FVector::ZeroVector, FColor::Red, 1, 0.4f); // Sphere
+        Child->AttachToActor(Parent, FAttachmentTransformRules::KeepRelativeTransform);
+        Child->SetActorRelativeLocation(FVector::ZeroVector);
+        mSpawnedActors.Add(Child);
+
+        // 父节点反向 Yaw 旋转
+        KTweenEx::RotateAround(Parent, FVector(0, 0, 1), -360.0f, Duration * 4.0f)
+            ->SetEase(KTweenType::linear)->SetLoop(-1);
+
+        // 子节点本地贝塞尔椭圆路径
+        TArray<FVector> localBez = {
+            FVector(-120, 0,   0),
+            FVector(-120, 70,  0),
+            FVector( 120, 70,  0),
+            FVector( 120, 0,   0),
+            FVector( 120, -70, 0),
+            FVector(-120, -70, 0),
+            FVector(-120, 0,   0),
+        };
+        KTweenEx::MoveLocalBezier(Child, localBez, Duration * 3.2f)
+            ->SetEase(KTweenType::linear)->SetLoop(-1);
+    }
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// 15. Path Extra — Move / Scale / RotateAround 补充演示
+// ══════════════════════════════════════════════════════════════════════
+void AKTweenDemoRunner::Demo_PathExtra()
+{
+    UWorld* World = GetWorld();
+    if (!World) return;
+
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+    // ── 1. Move to target + Scale + RotateAround 组合 ──
+    {
+        AActor* Act = SpawnShape(FVector(500, 1000, 0), FColor::Cyan, 0, 0.5f);
+        mSpawnedActors.Add(Act);
+
+        // 移动到目标点
+        KTweenEx::Move(Act, FVector(500, 1300, 0), Duration * 1.5f)
+            ->SetEase(KTweenType::easeInOutBack)->SetLoopPingPong(-1);
+
+        // 同时缩放
+        KTweenEx::Scale(Act, FVector(1.5f), Duration * 1.0f)
+            ->SetEase(KTweenType::easeInOutSine)->SetLoopPingPong(-1);
+
+        // 同时绕 Pitch 自转
+        KTweenEx::RotateAround(Act, FVector(0, 1, 0), 360.0f, Duration * 2.0f)
+            ->SetEase(KTweenType::linear)->SetLoop(-1);
+    }
+
+    // ── 2. Move zigzag + Scale pulse ──
+    {
+        AActor* Act = SpawnShape(FVector(900, 1000, 0), FColor::Orange, 0, 0.5f);
+        mSpawnedActors.Add(Act);
+
+        FVector O = Act->GetActorLocation();
+        TArray<FVector> zigPath = {
+            O + FVector(-80, -60, 0),
+            O + FVector(0, 60, 0),
+            O + FVector(80, -60, 0),
+            O + FVector(0, 60, 0),
+            O + FVector(-80, -60, 0),
+        };
+        KTweenEx::Move(Act, zigPath, Duration * 1.5f)
+            ->SetEase(KTweenType::easeOutElastic)->SetLoop(-1);
+
+        KTweenEx::Scale(Act, FVector(1.3f), Duration * 0.8f)
+            ->SetEase(KTweenType::easeInOutSine)->SetLoopPingPong(-1);
+    }
+
+    // ── 3. MoveLocal to target + parent rotation ──
+    {
+        AActor* Parent = World->SpawnActor<AActor>(FVector(1300, 1000, 0), FRotator::ZeroRotator, SpawnParams);
+        mSpawnedActors.Add(Parent);
+
+        AActor* Child = SpawnShape(FVector::ZeroVector, FColor::Purple, 2, 0.4f); // Cylinder
+        Child->AttachToActor(Parent, FAttachmentTransformRules::KeepRelativeTransform);
+        Child->SetActorRelativeLocation(FVector::ZeroVector);
+        mSpawnedActors.Add(Child);
+
+        // 父节点旋转
+        KTweenEx::RotateAround(Parent, FVector(0, 0, 1), 720.0f, Duration * 5.0f)
+            ->SetEase(KTweenType::linear)->SetLoop(-1);
+
+        // 子节点 local 往复移动
+        KTweenEx::MoveLocal(Child, FVector(120, 0, 0), Duration * 1.2f)
+            ->SetEase(KTweenType::easeInOutCubic)->SetLoopPingPong(-1);
+    }
+}
+
 // ──────────────────────────────────────────────────────────────────────
 // Run All Demos
 // ──────────────────────────────────────────────────────────────────────
@@ -438,6 +677,18 @@ void AKTweenDemoRunner::RunAllDemos()
     // 11. Handle Sequence (1x6 = 6)
     Demo_HandleSequence(SpawnGridBatch(1, 6, 140, FVector(1200, 0, 0)));
 
-    UE_LOG(LogTemp, Warning, TEXT("KTween Demo: Spawned %d objects across 11 demos! Play in editor to see animations."),
+    // 12. Path Linear — move(path[]) (1x3 = 3) 菱形/锯齿/圆形
+    Demo_PathLinear(SpawnGridBatch(1, 3, 220, FVector(-600, 700, 0)));
+
+    // 13. Path Bezier — moveBezier(path[]) (1x3 = 3) S/U/花形
+    Demo_PathBezier(SpawnGridBatch(1, 3, 220, FVector(0, 700, 0)));
+
+    // 14. Path Local — moveLocal(path[]) + 旋转父节点 (4 actors)
+    Demo_PathLocal();
+
+    // 15. Path Extra — Move/Scale/RotateAround 组合 (5 actors)
+    Demo_PathExtra();
+
+    UE_LOG(LogTemp, Warning, TEXT("KTween Demo: Spawned %d objects across 15 demos! Play in editor to see animations."),
            mSpawnedActors.Num());
 }

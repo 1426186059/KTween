@@ -7,6 +7,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "KTween.h"
+#include "KTweenEx.h"
 #include "KTweenDemoRunner.generated.h"
 
 UCLASS()
@@ -39,6 +40,12 @@ protected:
     void Demo_CancelHandle(const TArray<AActor*>& Targets);
     void Demo_100Objects(const TArray<AActor*>& Targets);
     void Demo_HandleSequence(const TArray<AActor*>& Targets);
+
+    // Path movement demos
+    void Demo_PathLinear(const TArray<AActor*>& Targets);
+    void Demo_PathBezier(const TArray<AActor*>& Targets);
+    void Demo_PathLocal();
+    void Demo_PathExtra();
 
     UPROPERTY()
     TArray<AActor*> mSpawnedActors;
